@@ -1,2 +1,2 @@
-# e-calculator
+# everything-calculator
 A collection of tools/calculators
