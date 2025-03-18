@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const algebra2stepForm = document.getElementById('algebra2stepForm');
+  const calculatorForm = document.getElementById('calculatorForm');
   const errorMessage = document.getElementById('error-message');
   const trianglePlot = document.getElementById('triangle-plot');
   const calculatedValues = document.getElementById('calculated-values');
-  const algebra2stepClearButton = document.getElementById('algebra2stepClearButton');
+  const clearButton = document.getElementById('clearButton');
 
-  if (algebra2stepForm) {
-      algebra2stepForm.addEventListener('submit', async function(e) {
+  if (calculatorForm) {
+      calculatorForm.addEventListener('submit', async function(e) {
           e.preventDefault();
 
           const formData = {
@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
           };
           try {
-              const response = await fetch('/algebra2stepcalculate', {
+              const response = await fetch('/algebra2step_calculate', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function() {
       });
   }
 
-  if (algebra2stepClearButton) {
-      algebra2stepClearButton.addEventListener('click', function(e) {
+  if (clearButton) {
+        clearButton.addEventListener('click', function(e) {
           e.preventDefault();
           const algebraInput = document.getElementById('algebra2stepequation');
           if (algebraInput) {

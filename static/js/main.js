@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const errorMessage = document.getElementById('error-message');
-    const calculatedValues = document.getElementById('calculated-values');
     document.querySelectorAll('.clear-single-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
@@ -9,8 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const input = document.getElementById(targetId);
                 if (input) {
                     input.value = '';
-                    if (errorMessage) errorMessage.style.display = 'none';
-                    if (calculatedValues) calculatedValues.innerHTML = '';
                 }
             }
         });

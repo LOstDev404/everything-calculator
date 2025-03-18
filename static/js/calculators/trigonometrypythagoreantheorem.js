@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-  const triangleForm = document.getElementById('triangleForm');
+  const calculatorForm = document.getElementById('calculatorForm');
   const errorMessage = document.getElementById('error-message');
   const trianglePlot = document.getElementById('triangle-plot');
   const calculatedValues = document.getElementById('calculated-values');
-  const rightTrigClearButton = document.getElementById('rightTrigClearButton');
+  const clearButton = document.getElementById('clearButton');
 
-  if (triangleForm) {
-    triangleForm.addEventListener('submit', async function(e) {
+  if (calculatorForm) {
+    calculatorForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         const formData = {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('/generate_triangle', {
+            const response = await fetch('/trigonometrypythagoreantheorem_calculate', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -70,8 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  if (rightTrigClearButton) {
-    rightTrigClearButton.addEventListener('click', function(e) {
+  if (clearButton) {
+    clearButton.addEventListener('click', function(e) {
         e.preventDefault();
         document.getElementById('angle1').value = '';
         document.getElementById('adjacent').value = '';
