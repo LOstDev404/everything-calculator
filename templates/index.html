@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Select a Tool/Calculator:</h2>
+
+
+
+    
+    <div class="calculator-grid" id="calculatorGrid">
+        <div class="calculator-card-wrapper" data-name="a two step equation 2 step equation algebra x = x equals solve for x">
+            <a href="{{ url_for('algebra2step') }}" class="calculator-card">
+                <h3>Algebra | Two Step Equations (Beta)</h3>
+                <p>Solve for X</p>
+            </a>
+        </div>
+
+        <div class="calculator-card-wrapper" data-name="patterns pattern arithmetic sequence geometric sequence">
+            <a href="{{ url_for('patternsequence') }}" class="calculator-card">
+                <h3>Patterns | Arithmetic and Geometric Sequences</h3>
+                <p>Calculate the nth number in a pattern</p>
+            </a>
+        </div>
+
+
+        
+
+        <div class="calculator-card-wrapper" data-name="trigonometry pythagorean theorem a + b = c a squared + b squared = c squared a squared plus b squared equals c squared right triangles">
+            <a href="{{ url_for('trigonometryright') }}" class="calculator-card">
+                <h3>Trigonometry (Right Triangle) + Pythagorean Theorem</h3>
+                <p>Calculate right triangle measurements and visualize the results</p>
+            </a>
+        </div>
+
+
+
+
+        
+
+
+
+
+
+        
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const grid = document.getElementById('calculatorGrid');
+    const cards = Array.from(grid.children);
+
+    cards.sort((a, b) => {
+        const titleA = a.querySelector('h3').textContent.trim();
+        const titleB = b.querySelector('h3').textContent.trim();
+        return titleA.localeCompare(titleB);
+    });
+
+    grid.innerHTML = '';
+    cards.forEach(card => grid.appendChild(card));
+});
+</script>
+{% endblock %}

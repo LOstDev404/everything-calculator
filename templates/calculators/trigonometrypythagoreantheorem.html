@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/calculators/trigonometrypythagoreantheorem.js') }}"></script>
+<div class="container">
+    <div class="calculator-container">
+        <div class="input-section">
+            <h2>Right Triangle Calculator: <small style="color: lightgray;">Fill 2 of the boxes</small></h2>
+            <form id="triangleForm">
+                <div class="input-group">
+                    <div class="input-label-group">
+                    
+                            <label for="angle1">Angle:</label>
+                        <button type="button" class="clear-single-btn" data-target="angle1">
+                            <i data-feather="trash-2"></i>
+                        </button>
+                    </div>
+                    <input type="number" id="angle1" step="0.001" max="89.999">
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label-group">
+                        <label for="adjacent">Adjacent (A):</label>
+                        <button type="button" class="clear-single-btn" data-target="adjacent">
+                            <i data-feather="trash-2"></i>
+                        </button>
+                    </div>
+                    <input type="number" id="adjacent" step="0.001">
+                </div>
+
+                <div class="input-group">
+                    <div class="input-label-group">
+                        <label for="opposite">Opposite (B):</label>
+                        <button type="button" class="clear-single-btn" data-target="opposite">
+                            <i data-feather="trash-2"></i>
+                        </button>
+                    </div>
+                    <input type="number" id="opposite" step="0.001">
+                </div>
+                <div class="input-group">
+                    <div class="input-label-group">
+                        <label for="hypotenuse">Hypotenuse (C):</label>
+                        <button type="button" class="clear-single-btn" data-target="hypotenuse">
+                            <i data-feather="trash-2"></i>
+                        </button>
+                    </div>
+                    <input type="number" id="hypotenuse" step="0.001">
+                </div>
+                <div class="button-group">
+                    <button type="rightTrigSubmit" class="generate-btn">Generate Triangle</button>
+                    <button id="rightTrigClearButton" class="clear-btn">Clear Boxes</button>
+                </div>
+            </form>
+            <div id="error-message" class="error-message"></div>
+        </div>
+        <div class="results-section">
+            <h3>Results:</h3>
+            <div id="triangle-visualization">
+                <img id="triangle-plot" src="" alt="Triangle visualization" style="display: none;">
+            </div>
+            <div id="calculated-values"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    feather.replace();
+</script>
+{% endblock %}

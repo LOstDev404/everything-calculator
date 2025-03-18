@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/calculators/algebra2step.js') }}"></script>
+<div class="container">
+    <div class="calculator-container">
+
+        <div class="input-section">
+            <div class="warning" style="color: red; font-weight: bold;">This calculator is not done!</div>
+            <h2>Algebra (Two Step) Calculator: <small style="color: lightgray;"></small></h2>
+            <form id="algebra2stepForm">
+                
+                <div class="input-group">
+                    <div class="input-label-group">
+                        <label for="algebra2stepequation">Enter a 2 step equation:</label>
+                        
+                        <button type="button" class="clear-single-btn" data-target="algebra2stepequation"><i data-feather="trash-2"></i></button>
+                    </div>
+                    <input type="text" id="algebra2stepequation">
+                </div>
+
+                <div class="button-group">
+                    <button type="algebra2stepSubmit" class="generate-btn">Calculate</button>
+                    <button id="algebra2stepClearButton" class="clear-btn">Clear Box</button>
+                </div>
+            </form>
+
+            <div id="error-message" class="error-message"></div>
+        </div>
+
+        <div class="results-section">
+            <h3>Results:</h3>
+
+            <div id="calculated-values"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    feather.replace();
+</script>
+{% endblock %}
