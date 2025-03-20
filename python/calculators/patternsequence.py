@@ -15,6 +15,7 @@ def patternsequence_solve(data):
             lastTermCalculated = firstTerm * (commonRatio ** (lastTerm - 1))
         else:
             result = jsonify({'error': 'Failed to calculate...'})
+            return result
             
         result = jsonify({
             'values': {
@@ -22,10 +23,9 @@ def patternsequence_solve(data):
                 'lastTermCalculated': f"{lastTermCalculated:.3f}",
             }
         })
+        return result
         
     except Exception as e:
         result = jsonify({'error': str(e)})
         
-    return result
-
     

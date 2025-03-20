@@ -9,23 +9,29 @@ def algebra2step_solve(data):
     
         if '(' in equation or ')' in equation:
             result = jsonify({'error': 'Parentheses are not supported'})
+            return result
     
         if '=' not in equation:
             result = jsonify({'error': 'Equation must contain an equals sign'})
+            return result
     
         if '/' in equation:
             result = jsonify({'error': 'Division and fractions are not supported in this calculator'})
+            return result
     
         sides = equation.split('=')
         if len(sides) != 2:
             result = jsonify({'error': 'You can only use one equal sign.'})
+            return result
         left_side, right_side = sides
     
         variables = sorted(set(re.findall(r'[a-z]', equation)))
         if not variables:
             result = jsonify({'error': 'No letters/variables in the equation'})
+            return result
         if len(variables) > 1:
             result = jsonify({'error': 'This calculator currently supports only one letter/variable'})
+            return result
         letter = variables[0]
     
         def process_term(term, is_coefficient=False):
@@ -86,6 +92,7 @@ def algebra2step_solve(data):
             right_var, right_const = process_side(right_side)
         except ValueError as e:
             result = jsonify({'error': str(e)})
+            return result
     
         total_var = left_var - right_var
         total_const = right_const - left_const
@@ -93,8 +100,10 @@ def algebra2step_solve(data):
         if abs(total_var) < 1e-10:  
             if abs(total_const) < 1e-10:
                 result = jsonify({'error': 'Equation is always true'})
+                return result
             else:
-                result = jsonify({'error': 'No solution exists'})
+                result = jsonify({'error': 'No solution exists'})  
+                return result
     
         solution = total_const / total_var
     
@@ -106,7 +115,8 @@ def algebra2step_solve(data):
                 'solution': solution,
             }
         })
-    
+        return result
     except Exception as e:
-        return jsonify({'error': f"Error solving equation: {str(e)}"})
-    return result
+        result = jsonify({'error': f"Error solving equation: {str(e)}"})
+        return result
+    

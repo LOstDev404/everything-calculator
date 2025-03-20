@@ -89,6 +89,7 @@ def trigonometrypythagoreantheorem_solve(data):
         elif opposite is not None and hypotenuse is not None:
             if hypotenuse < opposite:
                 result = jsonify({'error': 'Opposite cannot be greater than hypotenuse'})
+                return result
             angle1 = math.asin(opposite / hypotenuse)
             adjacent = hypotenuse * math.cos(angle1)
             angle1 = math.degrees(angle1)
@@ -103,12 +104,14 @@ def trigonometrypythagoreantheorem_solve(data):
         elif hypotenuse is not None and adjacent is not None:
             if hypotenuse < adjacent:
                 result = jsonify({'error': 'Adjacent cannot be greater than hypotenuse'})
+                return result
             angle1 = math.acos(adjacent / hypotenuse)
             opposite = hypotenuse * math.sin(angle1)
             angle1 = math.degrees(angle1)
             angle2 = 90 - angle1
         else:
             result = jsonify({'error': 'Please provide two variables to generate a triangle'})
+            return result
         area = 0.5 * adjacent * opposite
         perimeter = hypotenuse + adjacent + opposite
         plot_url = plot_right_triangle(angle1, angle2, hypotenuse, adjacent, opposite)
@@ -139,7 +142,8 @@ def trigonometrypythagoreantheorem_solve(data):
                 'areafrac': f"{areafrac}"
             }
         })
+        return result
 
     except Exception as e:
         result = jsonify({'error': str(e)})
-    return result
+        return result
