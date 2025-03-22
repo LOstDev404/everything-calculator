@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<script src="{{ url_for('static', filename='js/calculators/circlepolygon.js') }}"></script>
+<div class="container">
+    <div class="calculator-container">
+        <div class="input-section">
+            <h2>Area/Perimeter: <small style="color: lightgray;">Fill 1 or 2 boxes (Depending on what you're calculating)</small></h2>
+            <form id="calculatorForm">
+                
+                <div class="input-group">
+                    <div class="input-label-group">
+                        <label for="radiusSides">Enter the amount of sides, or the radius:</label>
+                        
+                        <button type="button" class="clear-single-btn" data-target="radiusSides"><i data-feather="trash-2"></i></button>
+                    </div>
+                    <input type="number" id="radiusSides">
+                </div>
+                <div class="input-group">
+                    <div class="input-label-group">
+                        <label for="diameterLength">Enter the lenth of each side, or the diamiter:</label>
+
+                        <button type="button" class="clear-single-btn" data-target="diameterLength"><i data-feather="trash-2"></i></button>
+                    </div>
+                    <input type="number" id="diameterLength">
+                </div>
+
+                <div class="button-group">
+                    <button type="Submit" class="generate-btn">Calculate</button>
+                    <button id="clearButton" class="clear-btn">Clear Boxes</button>
+                </div>
+            </form>
+
+            <div id="error-message" class="error-message"></div>
+        </div>
+
+        <div class="results-section">
+            <h3>Results:</h3>
+
+            <div id="calculated-values"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="https://unpkg.com/feather-icons"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    feather.replace();
+</script>
+{% endblock %}

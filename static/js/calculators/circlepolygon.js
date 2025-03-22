@@ -8,15 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
         calculatorForm.addEventListener('submit', async function(e) {
           e.preventDefault();
 
-          const formData = {
-              operation: document.getElementById('operation').value,
-              firstTerm: document.getElementById('firstTerm').value,
-              secondTerm: document.getElementById('secondTerm').value,
-              lastTerm: document.getElementById('lastTerm').value
-          };
-
+            const formData = {
+                radiusSides: document.getElementById('radiusSides').value,
+                diameterLength: document.getElementById('diameterLength').value
+              };
           try {
-              const response = await fetch('/patternsequence_calculate', {
+              const response = await fetch('/circlepolygon_calculate', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -33,9 +30,13 @@ document.addEventListener('DOMContentLoaded', function() {
               } else {
                   errorMessage.style.display = 'none';
                   calculatedValues.innerHTML = `
-                      <p>Term ${data.values.lastTerm} is ${data.values.lastTermCalculated}</p>
+                    <p>Shape: ${data.values.shape}</p>
+                    <p>Area: ${data.values.areaFrac}</p>
+                    <p>${data.values.perimeterFrac}</p>
+                    <p>${data.values.radiusDiameterInterior}</p>
                   `;
               }
+              
           } catch (error) {
               errorMessage.style.display = 'block';
               errorMessage.textContent = 'An error occurred while calculating';
@@ -47,9 +48,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (clearButton) {
             clearButton.addEventListener('click', function(e) {
               e.preventDefault();
-              document.getElementById('firstTerm').value = '';
-              document.getElementById('secondTerm').value = '';
-              document.getElementById('lastTerm').value = '';
+              document.getElementById('radiusSides').value = '';
+              document.getElementById('diameterLength').value = '';
 
           });
       }

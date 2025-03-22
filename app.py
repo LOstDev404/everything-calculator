@@ -5,6 +5,7 @@ import re
 #Calculator Imports
 from python.calculators.algebra2step import algebra2step_solve
 from python.calculators.patternsequence import patternsequence_solve
+from python.calculators.circlepolygon import circlepolygon_solve
 from python.calculators.trigonometrypythagoreantheorem import trigonometrypythagoreantheorem_solve
 
 app = Flask(__name__)
@@ -70,6 +71,17 @@ def algebra2step():
 def algebra2step_calculate():
     data = request.get_json()
     result = algebra2step_solve(data)
+    return result
+
+#circlepolygon ----------------------------
+@app.route('/circlepolygon')
+def circlepolygon():
+    return render_template('calculators/circlepolygon.html')
+
+@app.route('/circlepolygon_calculate', methods=['POST'])
+def circlepolygon_calculate():
+    data = request.get_json()
+    result = circlepolygon_solve(data)
     return result
     
 #Pattern Sequence ----------------------------

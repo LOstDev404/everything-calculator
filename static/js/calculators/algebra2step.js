@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
   const calculatorForm = document.getElementById('calculatorForm');
   const errorMessage = document.getElementById('error-message');
-  const trianglePlot = document.getElementById('triangle-plot');
   const calculatedValues = document.getElementById('calculated-values');
   const clearButton = document.getElementById('clearButton');
 
