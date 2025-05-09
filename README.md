@@ -8,7 +8,7 @@ The project is a simple Flask site currently hosted [here](https://everything-ca
 Here’s a breakdown of the calculators currently included (Sorted by most recently added on top):
 
 - Area/Perimeter | Circle and Regular Polygons
-- Algebra | Two Step Equations (Beta)
+- Algebra | Two Step Equations
 - Patterns | Arithmetic and Geometric Sequences
 - Trigonometry (Right Triangle) + Pythagorean Theorem
 

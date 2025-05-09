@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   errorMessage.style.display = 'none';
 
                   calculatedValues.innerHTML = `
-                      <p>${data.values.letter} = ${data.values.solution}</p>
+                      <p>${data.values.solution}</p>
                   `;
               }
           } catch (error) {
