@@ -32,11 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
                   calculatedValues.innerHTML = `
                 
+                    <div class="solution-container">
                     <p id="solution-text">${data.values.solution}</p>
-                    
+                    <button type="button" class="copy-btn" data-target="#solution-text"><i data-feather="copy"></i></button>
+                    </div>
+
                     
                   `;
-
+                  feather.replace();
               }
           } catch (error) {
               errorMessage.style.display = 'block';

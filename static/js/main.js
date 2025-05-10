@@ -16,8 +16,46 @@ document.addEventListener('DOMContentLoaded', function() {
         const targetId = event.target.getAttribute('data-target');
         const container = document.querySelector(targetId);
         const textToCopy = container.textContent;
-        navigator.clipboard.writeText(textToCopy)
 
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            const originalText = event.target.textContent;
+            event.target.textContent = 'Copied!';
+
+            setTimeout(() => {
+              event.target.textContent = originalText;
+            }, 2000);
+          })
+          .catch(err => {
+            console.error('Clipboard write failed:', err);
+
+            const textarea = document.createElement('textarea');
+            textarea.value = textToCopy;
+            textarea.style.position = 'absolute';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+
+            textarea.select();
+            try {
+              const successful = document.execCommand('copy');
+              if (successful) {
+                const originalText = event.target.textContent;
+                event.target.textContent = 'Copied!';
+                setTimeout(() => {
+                  event.target.textContent = originalText;
+                }, 2000);
+              } else {
+                event.target.textContent = 'Copy failed';
+                setTimeout(() => {
+                  event.target.textContent = originalText;
+                }, 2000);
+              }
+            } catch (err) {
+              console.error('Fallback clipboard copy failed:', err);
+            }
+
+            document.body.removeChild(textarea);
+          });
       }
     });
     

@@ -275,22 +275,7 @@ input[type="number"]::-webkit-outer-spin-button {
     gap: 1rem;
     margin-top: 1.5rem;
 }
-.copy-btn {
-    background-color: var(--background-light);
-    border: 1px solid var(--primary-color);
-    width: 25%
-    color: var(--text-color);
-    padding: 0.2rem 0.4rem;
-    border-radius: 3px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-    left: 1rem;
-    text-align: left;
-}
-.copy-btn:hover {
-    background-color: var(--primary-dark);
-}
+
 
 .generate-btn, .clear-btn{
     background-color: var(--primary-color);
@@ -333,9 +318,10 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .results-section {
     background-color: var(--background-light);
+    display: flex;
+    justify-content: space-between;
     padding: 2rem;
     border-radius: 8px;
-    display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
@@ -363,6 +349,14 @@ input[type="number"]::-webkit-outer-spin-button {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.solution-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 #calculated-values p {
@@ -371,7 +365,9 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 0.5rem;
     border-radius: 4px;
     background-color: var(--background-dark);
-    justify-content: space-between;
+    flex-grow: 1;
+    margin-right: 10px;
+    pointer-events: all;
 
 }
 
@@ -417,6 +413,28 @@ footer {
 }
 
 .clear-single-btn svg {
+    pointer-events: none;
+    width: 16px;
+    height: 16px;
+}
+
+.copy-btn {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.copy-btn:hover {
+    color: var(--primary-dark);
+}
+.copy-btn svg {
+    pointer-events: none;
     width: 16px;
     height: 16px;
 }
