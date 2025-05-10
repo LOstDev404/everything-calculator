@@ -31,8 +31,12 @@ document.addEventListener('DOMContentLoaded', function() {
                   errorMessage.style.display = 'none';
 
                   calculatedValues.innerHTML = `
-                      <p>${data.values.solution}</p>
+                
+                    <p id="solution-text">${data.values.solution}</p>
+                    
+                    
                   `;
+
               }
           } catch (error) {
               errorMessage.style.display = 'block';

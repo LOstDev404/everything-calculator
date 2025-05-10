@@ -11,6 +11,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
+    document.addEventListener('click', function (event) {
+      if (event.target.matches('.copy-btn')) {
+        const targetId = event.target.getAttribute('data-target');
+        const container = document.querySelector(targetId);
+        const textToCopy = container.textContent;
+        navigator.clipboard.writeText(textToCopy)
+
+      }
+    });
+    
     const searchInput = document.getElementById('calculatorSearch');
     const calculationResult = document.getElementById('calculationResult');
     const cards = document.querySelectorAll('.calculator-card-wrapper');

@@ -22,21 +22,29 @@ def algebra2step_solve(data):
         
         if letter:
             equation = equation.replace(letter, 'x')
+        
+        equation = re.sub(r'([xX])(\d+)', r'\2\1', equation)
         equation = re.sub(r'(\d)([xX(])', r'\1*\2', equation)
         equation = re.sub(r'(\))(\d)', r'\1*\2', equation)
-
-
         x = symbols('x')
 
         lhs, rhs = equation.split(',')
         lhs_expr = sympify(lhs)
         rhs_expr = sympify(rhs)
         equation = Eq(lhs_expr, rhs_expr)
-        print(equation)
+
         solution = solve(equation, x)
+        if not solution:
+            result = jsonify({
+                'values': {
+                    'solution': 'No solution exists',
+                }
+            })
+            return result
         solution = str(solution[0])
+        
         if '/' in solution:
-            if '(' in solution or ')' in solution:
+            if '(' in solution or ')' in solution or '*' in solution or '+' in solution:
                 result = jsonify({
                     'values': {
                         'solution': f'{letter} = {solution}',
