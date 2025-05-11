@@ -20,7 +20,7 @@ def patternsequence_solve(data):
         result = jsonify({
             'values': {
                 'lastTerm': f"{lastTerm:.3f}",
-                'lastTermCalculated': f"{lastTermCalculated:.3f}",
+                'lastTermCalculated': f"Term {lastTerm:.3} is {lastTermCalculated:.3f}",
             }
         })
         return result

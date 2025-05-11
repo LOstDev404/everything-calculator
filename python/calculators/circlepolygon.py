@@ -25,8 +25,8 @@ def circlepolygon_solve(data):
             shape = shape_name(sides)
             result = jsonify({
                 'values': {
-                    'shape': f"{shape}",
-                    'areaFrac': f"{areaFrac}",
+                    'shape': f"Shape: {shape}",
+                    'areaFrac': f"Area: {areaFrac}",
                     'perimeterFrac': f"Perimeter: {perimeterFrac}",
                     'radiusDiameterInterior': f"Sum of Interior Angles: {sumOfInt}"
                 }

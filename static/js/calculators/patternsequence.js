@@ -33,8 +33,12 @@ document.addEventListener('DOMContentLoaded', function() {
               } else {
                   errorMessage.style.display = 'none';
                   calculatedValues.innerHTML = `
-                      <p>Term ${data.values.lastTerm} is ${data.values.lastTermCalculated}</p>
+                      <div class="results-container">
+                    <p id="lastTermCalculated-text">${data.values.lastTermCalculated}</p>
+                    <button type="button" class="copy-btn" data-target="#lastTermCalculated-text"><i data-feather="copy"></i></button>
+                    </div>
                   `;
+                  feather.replace();
               }
           } catch (error) {
               errorMessage.style.display = 'block';

@@ -115,33 +115,25 @@ def trigonometrypythagoreantheorem_solve(data):
         area = 0.5 * adjacent * opposite
         perimeter = hypotenuse + adjacent + opposite
         plot_url = plot_right_triangle(angle1, angle2, hypotenuse, adjacent, opposite)
-        angle1frac = float_to_fraction_percent(angle1, '°', False, False)
-        angle2frac = float_to_fraction_percent(angle2, '°', False, False)
-        adjacentfrac = float_to_fraction_percent(adjacent, '', False, False)
-        oppositefrac = float_to_fraction_percent(opposite, '', False, False)
-        hypotenusefrac = float_to_fraction_percent(hypotenuse, '', False, False)
-        perimeterfrac = float_to_fraction_percent(perimeter, '', False, False)
-        areafrac = float_to_fraction_percent(area, '', False, False)
+        angle1Frac = float_to_fraction_percent(angle1, '°', False, False)
+        angle2Frac = float_to_fraction_percent(angle2, '°', False, False)
+        adjacentFrac = float_to_fraction_percent(adjacent, '', False, False)
+        oppositeFrac = float_to_fraction_percent(opposite, '', False, False)
+        hypotenuseFrac = float_to_fraction_percent(hypotenuse, '', False, False)
+        perimeterFrac = float_to_fraction_percent(perimeter, '', False, False)
+        areaFrac = float_to_fraction_percent(area, '', False, False)
 
         result = jsonify({
             'plot': plot_url,
             'values': {
-                'angle1': f"{angle1:.3f}",
-                'angle2': f"{angle2:.3f}",
-                'adjacent': f"{adjacent:.3f}",
-                'opposite': f"{opposite:.3f}",
-                'hypotenuse': f"{hypotenuse:.3f}",
-                'perimiter': f"{perimeter:.3f}",
-                'area': f"{area:.3f}",
-                'angle1frac': f"{angle1frac}",
-                'angle2frac': f"{angle2frac}",
-                'adjacentfrac': f"{adjacentfrac}",
-                'oppositefrac': f"{oppositefrac}",
-                'hypotenusefrac': f"{hypotenusefrac}",
-                'perimiterfrac': f"{perimeterfrac}",
-                'areafrac': f"{areafrac}"
-            }
-        })
+                'angle1': f"Angle 1: {angle1Frac}",
+                'angle2': f"Angle 2: {angle2Frac}",
+                'adjacent': f"Adjacent (A): {adjacentFrac}",
+                'opposite': f"Opposite (B): {oppositeFrac}",
+                'hypotenuse': f"Hypotenuse (C): {hypotenuseFrac}",
+                'perimeter': f"Perimeter: {perimeterFrac}",
+                'area': f"Area: {areaFrac}",
+        }})
         return result
 
     except Exception as e:

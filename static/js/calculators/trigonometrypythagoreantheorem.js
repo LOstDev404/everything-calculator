@@ -48,15 +48,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('hypotenuse').value = data.values.hypotenuse;
 
                 calculatedValues.innerHTML = `
-                    <h2>Formatting: Decimal | Fraction</h2>
-                    <p>Angle 1: ${data.values.angle1frac}</p>
-                    <p>Angle 2: ${data.values.angle2frac}</p>
-                    <p>Adjacent (A): ${data.values.adjacentfrac}</p>
-                    <p>Opposite (B): ${data.values.oppositefrac}</p>
-                    <p>Hypotenuse (C): ${data.values.hypotenusefrac}</p>
-                    <p>Perimiter: ${data.values.perimiterfrac}</p>
-                    <p>Area: ${data.values.areafrac}</p>
+                    <div class="results-container">
+                        <p id="angle1-text">${data.values.angle1}</p>
+                        <button type="button" class="copy-btn" data-target="#angle1-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                        <p id="angle2-text">${data.values.angle2}</p>
+                        <button type="button" class="copy-btn" data-target="#angle2-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                        <p id="adjacent-text">${data.values.adjacent}</p>
+                        <button type="button" class="copy-btn" data-target="#adjacent-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                        <p id="opposite-text">${data.values.opposite}</p>
+                        <button type="button" class="copy-btn" data-target="#opposite-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                        <p id="hypotenuse-text">${data.values.hypotenuse}</p>
+                        <button type="button" class="copy-btn" data-target="#hypotenuse-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                        <p id="perimeter-text">${data.values.perimeter}</p>
+                        <button type="button" class="copy-btn" data-target="#perimeter-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                        <p id="area-text">${data.values.area}</p>
+                        <button type="button" class="copy-btn" data-target="#area-text"><i data-feather="copy"></i></button>
+                    </div>
                 `;
+                feather.replace();
             }
         } catch (error) {
             errorMessage.style.display = 'block';

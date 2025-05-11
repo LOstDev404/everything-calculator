@@ -31,8 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   errorMessage.style.display = 'none';
 
                   calculatedValues.innerHTML = `
-                
-                    <div class="solution-container">
+                    <div class="results-container">
                     <p id="solution-text">${data.values.solution}</p>
                     <button type="button" class="copy-btn" data-target="#solution-text"><i data-feather="copy"></i></button>
                     </div>

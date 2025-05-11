@@ -30,11 +30,24 @@ document.addEventListener('DOMContentLoaded', function() {
               } else {
                   errorMessage.style.display = 'none';
                   calculatedValues.innerHTML = `
-                    <p>Shape: ${data.values.shape}</p>
-                    <p>Area: ${data.values.areaFrac}</p>
-                    <p>${data.values.perimeterFrac}</p>
-                    <p>${data.values.radiusDiameterInterior}</p>
+                    <div class="results-container">
+                    <p id="shape-text">${data.values.shape}</p>
+                    <button type="button" class="copy-btn" data-target="#shape-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                    <p id="areaFrac-text">${data.values.areaFrac}</p>
+                    <button type="button" class="copy-btn" data-target="#areaFrac-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                    <p id="perimeterFrac-text">${data.values.perimeterFrac}</p>
+                    <button type="button" class="copy-btn" data-target="#perimeterFrac-text"><i data-feather="copy"></i></button>
+                    </div>
+                    <div class="results-container">
+                    <p id="radiusDiameterInterior-text">${data.values.radiusDiameterInterior}</p>
+                    <button type="button" class="copy-btn" data-target="#radiusDiameterInterior-text"><i data-feather="copy"></i></button>
+                    </div>
                   `;
+                  feather.replace();
               }
               
           } catch (error) {
