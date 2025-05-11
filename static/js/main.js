@@ -13,16 +13,26 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     document.addEventListener('click', function (event) {
       if (event.target.matches('.copy-btn')) {
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+          if (btn !== event.target) {
+            btn.innerHTML = '<i data-feather="copy"></i>';
+            if (window.feather) {
+              feather.replace({ scope: btn });
+            }
+          }
+        });
         const targetId = event.target.getAttribute('data-target');
         const container = document.querySelector(targetId);
         const textToCopy = container.textContent;
-
         navigator.clipboard.writeText(textToCopy)
           .then(() => {
-            event.target.textContent = 'Copied';
+            event.target.innerHTML = '<i data-feather="check"></i>';
+            if (window.feather) {
+              feather.replace({ scope: event.target });
+            }
           })
           .catch(err => {
-            console.error('Clipboard write failed:', err);
+            console.error('Clipboard write failed', err);
           });
       }
     });
