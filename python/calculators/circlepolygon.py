@@ -25,10 +25,10 @@ def circlepolygon_solve(data):
             shape = shape_name(sides)
             result = jsonify({
                 'values': {
-                    'shape': f"Shape: {shape}",
-                    'areaFrac': f"Area: {areaFrac}",
-                    'perimeterFrac': f"Perimeter: {perimeterFrac}",
-                    'radiusDiameterInterior': f"Sum of Interior Angles: {sumOfInt}"
+                    'a1shape': f"Shape: {shape}",
+                    'a2areaFrac': f"Area: {areaFrac}",
+                    'a3perimeterFrac': f"Perimeter: {perimeterFrac}",
+                    'a4radiusDiameterInterior': f"Sum of Interior Angles: {sumOfInt}"
                 }
             })
             return result
@@ -44,10 +44,10 @@ def circlepolygon_solve(data):
             shape = "Circle"
             result = jsonify({
                 'values': {
-                    'shape': f"{shape}",
-                    'areaFrac': f"{area:.3f}² | {areaFrac:.3f}π²",
-                    'perimeterFrac': f"Circumference: {perimeter:.3f}² | {perimeterFrac:.3f}π²",
-                    'radiusDiameterInterior': f"Diameter: {diameter}"
+                    'a1shape': f"Shape: {shape}",
+                    'a2areaFrac': f"Area: {area:.3f}² | {areaFrac:.3f}π²",
+                    'a3perimeterFrac': f"Circumference: {perimeter:.3f}² | {perimeterFrac:.3f}π²",
+                    'a4radiusDiameterInterior': f"Diameter: {diameter}"
                 }
             })
             return result
@@ -63,10 +63,10 @@ def circlepolygon_solve(data):
             shape = "Circle"
             result = jsonify({
                 'values': {
-                    'shape': f"{shape}",
-                    'areaFrac': f"{area:.3f}² | {areaFrac:.3f}π²",
-                    'perimeterFrac': f"Circumference: {perimeter:.3f}² | {perimeterFrac:.3f}π²",
-                    'radiusDiameterInterior': f"Radius: {radius}"
+                    'a1shape': f"Shape: {shape}",
+                    'a2areaFrac': f"Area: {area:.3f}² | {areaFrac:.3f}π²",
+                    'a3perimeterFrac': f"Circumference: {perimeter:.3f}² | {perimeterFrac:.3f}π²",
+                    'a4radiusDiameterInterior': f"Radius: {radius}"
                 }
             })
             return result

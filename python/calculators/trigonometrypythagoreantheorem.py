@@ -126,13 +126,13 @@ def trigonometrypythagoreantheorem_solve(data):
         result = jsonify({
             'plot': plot_url,
             'values': {
-                'angle1': f"Angle 1: {angle1Frac}",
-                'angle2': f"Angle 2: {angle2Frac}",
-                'adjacent': f"Adjacent (A): {adjacentFrac}",
-                'opposite': f"Opposite (B): {oppositeFrac}",
-                'hypotenuse': f"Hypotenuse (C): {hypotenuseFrac}",
-                'perimeter': f"Perimeter: {perimeterFrac}",
-                'area': f"Area: {areaFrac}",
+                'a1angle1': f"Angle 1: {angle1Frac}",
+                'a2angle2': f"Angle 2: {angle2Frac}",
+                'a3adjacent': f"Adjacent (A): {adjacentFrac}",
+                'a4opposite': f"Opposite (B): {oppositeFrac}",
+                'a5hypotenuse': f"Hypotenuse (C): {hypotenuseFrac}",
+                'a6perimeter': f"Perimeter: {perimeterFrac}",
+                'a7area': f"Area: {areaFrac}",
         }})
         return result
 

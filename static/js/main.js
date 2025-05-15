@@ -105,4 +105,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     }
+    const clearButton = document.querySelector('.clear-btn');
+    if (clearButton) {
+        clearButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const allInputs = document.querySelectorAll('input');
+            allInputs.forEach(input => input.value = '');
+        });
+    }
+
 });

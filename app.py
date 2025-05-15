@@ -8,6 +8,7 @@ from python.calculators.patternsequence import patternsequence_solve
 from python.calculators.circlepolygon import circlepolygon_solve
 from python.calculators.trigonometrypythagoreantheorem import trigonometrypythagoreantheorem_solve
 
+
 app = Flask(__name__)
 #Search calculator ------------------------
 @app.route('/calculate', methods=['POST'])
@@ -61,6 +62,8 @@ def not_found(e):
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
 
 #Algebra 2-Step ----------------------------
 @app.route('/algebra2step')
