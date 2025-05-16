@@ -1,0 +1,68 @@
+[
+    {
+        "id": "algebra2step",
+        "name": "Algebra | Two Step Equations",
+        "description": "Solve for X",
+        "tags": "a two step equation 2 step equation algebra x = x equals solve for x",
+        "title": "Algebra (Two Step) Calculator:",
+        "subtitle": "",
+        "textinput": {
+            "algebra2stepequation": "Enter a 2 step equation:"
+        }
+    },
+    
+    {
+        "id": "patternsequence",
+        "name": "Patterns | Arithmetic and Geometric Sequences",
+        "description": "Calculate the nth number in a pattern",
+        "tags": "patterns pattern arithmetic sequence geometric sequence",
+        "title": "Pattern Calculator:",
+        "subtitle": "Fill all of the boxes",
+        "selectorinput": {
+           "add_sub" :"Addition/Subtraction | Arithmetic",
+            "mult_div": "Multiplication/Division | Geometric"
+        },
+        "numberinput": {
+            "firstTerm": "First number in the sequence:",
+            "secondTerm": "Second number in the sequence:",
+            "lastTerm": "Term you're skipping to (n):"
+        }
+    },
+    
+    {
+        "id": "circlepolygon",
+        "name": "Area/Perimeter | Circle and Regular Polygons",
+        "description": "Calculate the area and perimeter of a circle or regular polygons",
+        "tags": "area of a polygon, area of a circle, area of a regular polygon, perimeter of a circle, perimeter or a polygon, perimeter of a regular polygon",
+        "title": "Area/Perimeter:",
+        "subtitle": "Fill 1 or 2 boxes (Depending on what you're calculating)",
+        "numberinput": {
+            "radiusSides": "Enter the amount of sides, or the radius:",
+            "diameterLength": "Enter the lenth of each side, or the diamiter:"
+        }
+    },
+    
+    {
+        "id": "trigonometrypythagoreantheorem",
+        "name": "Trigonometry (Right Triangle) + Pythagorean Theorem",
+        "description": "Calculate right triangle measurements and visualize the results",
+        "tags": "trigonometry pythagorean theorem a + b = c a squared + b squared = c squared a squared plus b squared equals c squared right triangles",
+        "title": "Right Triangle Calculator:",
+        "subtitle": "Fill 2 of the boxes",
+        "numberinput": {
+            "angle1": "Angle:",
+            "adjacent": "Adjacent (A):",
+            "opposite": "Opposite (B):",
+            "hypotenuse": "Hypotenuse (C):"
+        }
+    }
+
+
+
+
+
+
+
+
+    
+]

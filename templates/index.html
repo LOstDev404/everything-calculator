@@ -5,63 +5,38 @@
     <h2>Select a Tool/Calculator:</h2>
 
     <div class="calculator-grid" id="calculatorGrid">
-        <div class="calculator-card-wrapper" data-name="a two step equation 2 step equation algebra x = x equals solve for x">
-            <a href="{{ url_for('algebra2step') }}" class="calculator-card">
-                <h3>Algebra | Two Step Equations</h3>
-                <p>Solve for X</p>
-            </a>
-        </div>
 
-        <div class="calculator-card-wrapper" data-name="patterns pattern arithmetic sequence geometric sequence">
-            <a href="{{ url_for('patternsequence') }}" class="calculator-card">
-                <h3>Patterns | Arithmetic and Geometric Sequences</h3>
-                <p>Calculate the nth number in a pattern</p>
-            </a>
-        </div>
-
-        <div class="calculator-card-wrapper" data-name="area of a polygon, area of a circle, area of a regular polygon, perimeter of a circle, perimeter or a polygon, perimeter of a regular polygon">
-            <a href="{{ url_for('circlepolygon') }}" class="calculator-card">
-                <h3>Area/Perimeter | Circle and Regular Polygons</h3>
-                <p>Calculate the area and perimeter of a circle or regular polygons</p>
-            </a>
-        </div>
-
-
-        
-
-        <div class="calculator-card-wrapper" data-name="trigonometry pythagorean theorem a + b = c a squared + b squared = c squared a squared plus b squared equals c squared right triangles">
-            <a href="{{ url_for('trigonometryright') }}" class="calculator-card">
-                <h3>Trigonometry (Right Triangle) + Pythagorean Theorem</h3>
-                <p>Calculate right triangle measurements and visualize the results</p>
-            </a>
-        </div>
-
-
-
-
-        
-
-
-
-
-
-        
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const grid = document.getElementById('calculatorGrid');
-    const cards = Array.from(grid.children);
+       document.addEventListener('DOMContentLoaded', function() {
+           if (sessionStorage.getItem('calculatorGridHTML')) {
+               document.getElementById('calculatorGrid').innerHTML = sessionStorage.getItem('calculatorGridHTML');
 
-    cards.sort((a, b) => {
-        const titleA = a.querySelector('h3').textContent.trim();
-        const titleB = b.querySelector('h3').textContent.trim();
-        return titleA.localeCompare(titleB);
-    });
+               if (typeof initializeSearchHandling === 'function') {
+                   initializeSearchHandling();
+               }
+           } else {
+               fetch('/home')
+                   .then(response => response.json())
+                   .then(data => {
+                       if (data.error) {
+                           console.error('Error loading calculators:', data.error);
+                           return;
+                       }
+                       const grid = document.getElementById('calculatorGrid');
+                       const sortedCards = data.cards.sort((a, b) => a.localeCompare(b));
+                       grid.innerHTML = sortedCards.join('');
+                       sessionStorage.setItem('calculatorGridHTML', grid.innerHTML);
 
-    grid.innerHTML = '';
-    cards.forEach(card => grid.appendChild(card));
-});
+
+                       if (typeof initializeSearchHandling === 'function') {
+                           initializeSearchHandling();
+                       }
+                   })
+                   .catch(error => console.error('Error fetching calculators:', error));
+           }
+       });
 </script>
 {% endblock %}

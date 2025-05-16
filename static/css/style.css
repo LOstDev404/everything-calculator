@@ -332,14 +332,14 @@ input[type="number"]::-webkit-outer-spin-button {
     font-size: 1.5rem;
 }
 
-#triangle-visualization {
+#visualization-section {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 1.5rem;
 }
 
-#triangle-plot {
+#plot {
     max-width: 100%;
     height: auto;
 }

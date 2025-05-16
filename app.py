@@ -1,12 +1,8 @@
 import os
 from flask import Flask, render_template, request, jsonify
 import re
-
-#Calculator Imports
-from python.calculators.algebra2step import algebra2step_solve
-from python.calculators.patternsequence import patternsequence_solve
-from python.calculators.circlepolygon import circlepolygon_solve
-from python.calculators.trigonometrypythagoreantheorem import trigonometrypythagoreantheorem_solve
+import json
+import importlib
 
 
 app = Flask(__name__)
@@ -51,63 +47,159 @@ def calculate():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-
-
-
 #Non-Calculator Pages
 @app.errorhandler(404)
 def not_found(e):
     return render_template("404.html")
-    
+@app.route('/calculators/')
+def calculators():
+    return render_template('index.html')
 @app.route('/')
 def index():
     return render_template('index.html')
 
-
-
-#Algebra 2-Step ----------------------------
-@app.route('/algebra2step')
-def algebra2step():
-    return render_template('calculators/algebra2step.html')
-
-@app.route('/algebra2step_calculate', methods=['POST'])
-def algebra2step_calculate():
-    data = request.get_json()
-    result = algebra2step_solve(data)
-    return result
-
-#circlepolygon ----------------------------
-@app.route('/circlepolygon')
-def circlepolygon():
-    return render_template('calculators/circlepolygon.html')
-
-@app.route('/circlepolygon_calculate', methods=['POST'])
-def circlepolygon_calculate():
-    data = request.get_json()
-    result = circlepolygon_solve(data)
-    return result
+@app.route('/home')
+def load_cards():
     
-#Pattern Sequence ----------------------------
-@app.route('/patternsequence')
-def patternsequence():
-    return render_template('calculators/patternsequence.html')
+    try:
+        with open('calculators.json') as f:
+            calculators = json.load(f)
 
-@app.route('/patternsequence_calculate', methods=['POST'])
-def patternsequence_calculate():
-    data = request.get_json()
-    result = patternsequence_solve(data)
-    return result
+        calculator_cards = []
 
-#Trigonometry Pythagorean Theorem------------
-@app.route('/trigonometrypythagoreantheorem')
-def trigonometryright():
-    return render_template('calculators/trigonometrypythagoreantheorem.html')
+        for calculator in calculators:
+            tags = calculator.get('tags', '')
+            id = calculator.get('id', '')
+            name = calculator.get('name', '')
+            description = calculator.get('description', '')
+            url = f"<a href=;/calculators/{id}; class=;calculator-card;> "
+            url = url.replace(';', '"')
+        
+            card_html = (
+                    f"<div class='calculator-card-wrapper' data-name='{tags}'>"
+                    f"{url}"
+                    f"    <h3>{name}</h3>"
+                    f"    <p>{description}</p>"
+                    f"  </a>"
+                    f"</div>"
+                )
+            calculator_cards.append(card_html)
 
-@app.route('/trigonometrypythagoreantheorem_calculate', methods=['POST'])
-def trigonometrypythagoreantheorem_calculate():
-    data = request.get_json()
-    result = trigonometrypythagoreantheorem_solve(data)
-    return result
+        return jsonify({'cards': calculator_cards})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+        
+    
+    
+    
+
+
+#Calculator Code
+@app.route('/calculators/solve/<calculator>', methods=['POST'])
+def calculator_calculate(calculator):
+    try:
+        print(f"Received request for calculation from {calculator}")
+
+        if not request.is_json:
+            return jsonify({"error": "Request must be JSON"}), 400
+
+        data = request.get_json()
+        print(f"Data received: {data}")
+
+        if not re.match(r'^[a-zA-Z0-9_]+$', calculator):
+            return jsonify({"error": "Invalid calculator name"}), 400
+
+        module_name = f'python.calculators.{calculator}'
+        try:
+            calculator_module = importlib.import_module(module_name)
+            print(f"Module imported: {calculator_module}")
+        except ModuleNotFoundError:
+            return jsonify({"error": f"Calculator '{calculator}' not found"}), 404
+
+        solve_function_name = f'{calculator}_solve'
+        if not hasattr(calculator_module, solve_function_name):
+            return jsonify({"error": f"Calculator '{calculator}' has no solve function"}), 404
+
+        calculator_solve = getattr(calculator_module, solve_function_name)
+
+        try:
+            result = calculator_solve(data)
+            print(f"Result: {result}")
+            return result
+        except Exception as e:
+            print(f"Calculation error: {str(e)}")
+            return jsonify({"error": f"Calculation failed: {str(e)}"}), 500
+
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
+
+@app.route('/calculators/<calculator>')
+def calculator_route(calculator):
+    return render_template('calculator.html')
+@app.route('/loadcalculator<calculatorId>')
+def load_calculator(calculatorId):
+    print(f"Loading calculator with ID: {calculatorId}")
+    try:
+        with open('calculators.json') as f:
+            calculators = json.load(f)
+        calculator = next((calc for calc in calculators if calc.get('id') == calculatorId), None)
+        if calculator is None:
+            return jsonify({'error': 'Calculator not found.'}), 404
+
+        title = calculator.get('title', 'Calculator')
+        subtitle = calculator.get('subtitle', 'Calculator')
+        
+        html = f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n'
+        html += '<form id="calculatorForm">\n'
+
+        selector_input = calculator.get('selectorinput', {})
+        if selector_input:
+            html += '    <div class="input-group">\n'
+            html += '        <div class="input-label-group">\n'
+            html += '            <label for="operation">Operation:</label>\n'
+            html += '        </div>\n'
+            html += '        <select id="operation" name="operation">\n'
+            for value, full_text in selector_input.items():
+                html += f'            <option value="{value}">{full_text}</option>\n'
+            html += '        </select>\n'
+            html += '    </div>\n'
+
+        numberinput = calculator.get('numberinput', {})
+        for input_id, label_text in numberinput.items():
+            html += '    <div class="input-group">\n'
+            html += '        <div class="input-label-group">\n'
+            html += f'            <label for="{input_id}">{label_text}</label>\n'
+            html += f'            <button type="button" class="clear-single-btn" data-target="{input_id}">\n'
+            html += '                <i data-feather="trash-2"></i>\n'
+            html += '            </button>\n'
+            html += '        </div>\n'
+            html += f'        <input type="number" id="{input_id}" step="0.001">\n'
+            html += '    </div>\n'
+        
+        textinput = calculator.get('textinput', {})
+        for input_id, label_text in textinput.items():
+            html += '    <div class="input-group">\n'
+            html += '        <div class="input-label-group">\n'
+            html += f'            <label for="{input_id}">{label_text}</label>\n'
+            html += f'            <button type="button" class="clear-single-btn" data-target="{input_id}">\n'
+            html += '                <i data-feather="trash-2"></i>\n'
+            html += '            </button>\n'
+            html += '        </div>\n'
+            html += f'        <input type="text" id="{input_id}">\n'
+            html += '    </div>\n'
+            
+
+        
+        box_count = len(numberinput) + len(textinput)
+        clear_box_text = "Clear Box" if box_count == 1 else "Clear Boxes"
+
+        html += f'<div class="button-group"><button type="Submit" class="generate-btn">Calculate</button><button id="clearButton" class="clear-btn">{clear_box_text}</button></div><div id="error-message" class="error-message"></div>'
+        html += '</form>'
+        return jsonify({'html': html})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

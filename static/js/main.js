@@ -1,54 +1,24 @@
 document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('.clear-single-btn').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('data-target');
-            if (targetId) {
-                const input = document.getElementById(targetId);
-                if (input) {
-                    input.value = '';
-                }
-            }
-        });
-    });
-    document.addEventListener('click', function (event) {
-      if (event.target.matches('.copy-btn')) {
-        document.querySelectorAll('.copy-btn').forEach(btn => {
-          if (btn !== event.target) {
-            btn.innerHTML = '<i data-feather="copy"></i>';
-            if (window.feather) {
-              feather.replace({ scope: btn });
-            }
-          }
-        });
-        const targetId = event.target.getAttribute('data-target');
-        const container = document.querySelector(targetId);
-        const textToCopy = container.textContent;
-        navigator.clipboard.writeText(textToCopy)
-          .then(() => {
-            event.target.innerHTML = '<i data-feather="check"></i>';
-            if (window.feather) {
-              feather.replace({ scope: event.target });
-            }
-          })
-          .catch(err => {
-            console.error('Clipboard write failed', err);
-          });
-      }
-    });
-    
+
+    initializeSearchHandling();
+
+});
+                            
+function initializeSearchHandling() {
     const searchInput = document.getElementById('calculatorSearch');
     const calculationResult = document.getElementById('calculationResult');
-    const cards = document.querySelectorAll('.calculator-card-wrapper');
     let typingTimer;
 
     if (searchInput) {
         const urlParams = new URLSearchParams(window.location.search);
         const searchParam = urlParams.get('search');
+
         if (searchParam) {
             searchInput.value = searchParam;
-            filterAndSortCards(searchParam.toLowerCase());
+
+            waitForCardsAndFilter(searchParam.toLowerCase());
         }
+
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase();
             clearTimeout(typingTimer);
@@ -78,40 +48,49 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 calculationResult.style.display = 'none';
             }
+
             filterAndSortCards(searchTerm);
         });
     }
-    function filterAndSortCards(searchTerm) {
+}
+
+function waitForCardsAndFilter(searchTerm) {
+
+    const checkInterval = setInterval(() => {
+        const cards = document.querySelectorAll('.calculator-card-wrapper');
         if (cards.length > 0) {
-            const cardArray = Array.from(cards);
-            const calculatorGrid = document.getElementById('calculatorGrid');
-
-            cardArray.sort((a, b) => {
-                const textA = a.querySelector('h3').textContent.toLowerCase();
-                const textB = b.querySelector('h3').textContent.toLowerCase();
-                return textA.localeCompare(textB);
-            });
-
-            cardArray.forEach((card) => {
-                const searchText = card.getAttribute('data-name');
-                const cardTitle = card.querySelector('h3').textContent.toLowerCase();
-                const cardDesc = card.querySelector('p').textContent.toLowerCase();
-                const isMatch = searchText.includes(searchTerm) || 
-                              cardTitle.includes(searchTerm) || 
-                              cardDesc.includes(searchTerm);
-                const sortedIndex = cardArray.indexOf(card);
-                card.style.order = sortedIndex;
-                card.style.display = isMatch ? 'block' : 'none';
-            });
+            clearInterval(checkInterval);
+            filterAndSortCards(searchTerm);
         }
-    }
-    const clearButton = document.querySelector('.clear-btn');
-    if (clearButton) {
-        clearButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            const allInputs = document.querySelectorAll('input');
-            allInputs.forEach(input => input.value = '');
+    }, 100);
+
+    setTimeout(() => {
+        clearInterval(checkInterval);
+    }, 5000);
+}
+
+function filterAndSortCards(searchTerm) {
+    const cards = document.querySelectorAll('.calculator-card-wrapper');
+
+    if (cards.length > 0) {
+        const cardArray = Array.from(cards);
+
+        cardArray.sort((a, b) => {
+            const textA = a.querySelector('h3').textContent.toLowerCase();
+            const textB = b.querySelector('h3').textContent.toLowerCase();
+            return textA.localeCompare(textB);
+        });
+
+        cardArray.forEach((card) => {
+            const searchText = card.getAttribute('data-name') || '';
+            const cardTitle = card.querySelector('h3').textContent.toLowerCase();
+            const cardDesc = card.querySelector('p').textContent.toLowerCase();
+            const isMatch = searchText.includes(searchTerm) || 
+                          cardTitle.includes(searchTerm) || 
+                          cardDesc.includes(searchTerm);
+            const sortedIndex = cardArray.indexOf(card);
+            card.style.order = sortedIndex;
+            card.style.display = isMatch ? 'block' : 'none';
         });
     }
-
-});
+}
