@@ -106,9 +106,25 @@ def calculator_calculate(calculator):
         if not re.match(r'^[a-zA-Z0-9_]+$', calculator):
             return jsonify({"error": "Invalid calculator name"}), 400
 
-        solve_function = app.config.get(f'calculator_solve_{calculator}')
+        solve_function_key = f'calculator_solve_{calculator}'
+        solve_function = app.config.get(solve_function_key)
+
         if not solve_function:
-            return jsonify({"error": f"Calculator '{calculator}' not found or not loaded"}), 404
+            print(f"Solve function not found in app.config with key: {solve_function_key}")
+            try:
+                module_name = f'python.calculators.{calculator}'
+                calculator_module = importlib.import_module(module_name)
+                solve_function_name = f'{calculator}_solve'
+
+                if hasattr(calculator_module, solve_function_name):
+                    solve_function = getattr(calculator_module, solve_function_name)
+                    app.config[solve_function_key] = solve_function
+                    print(f"Reloaded solve function for {calculator}")
+                else:
+                    return jsonify({"error": f"Calculator '{calculator}' has no solve function"}), 404
+            except Exception as e:
+                print(f"Error reloading calculator module: {str(e)}")
+                return jsonify({"error": f"Calculator '{calculator}' not found or not loaded"}), 404
 
         try:
             result = solve_function(data)
@@ -120,15 +136,15 @@ def calculator_calculate(calculator):
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
-        
+
 #Load Calculator Page
 @app.route('/calculators/<calculator>')
 def calculator_route(calculator):
     return render_template('calculator.html')
+
 #Load Calculator
 @app.route('/loadcalculator<calculatorId>')
 def load_calculator(calculatorId):
-    
     print(f"Loading calculator with ID: {calculatorId}")
     try:
         with open('calculators.json') as f:
@@ -154,7 +170,11 @@ def load_calculator(calculatorId):
                 return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
 
             calculator_solve = getattr(calculator_module, solve_function_name)
-            app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
+
+            solve_function_key = f'calculator_solve_{calculatorId}'
+            app.config[solve_function_key] = calculator_solve
+            print(f"Stored solve function with key: {solve_function_key}")
+
         except ModuleNotFoundError:
             return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
         except Exception as e:
