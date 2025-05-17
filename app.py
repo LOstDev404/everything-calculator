@@ -88,52 +88,34 @@ def load_cards():
         return jsonify({'cards': calculator_cards})
     except Exception as e:
         return jsonify({'error': str(e)})
-        
-    
-    
-    
-
 
 #Calculator Code
 @app.route('/calculators/solve/<calculator>', methods=['POST'])
 def calculator_calculate(calculator):
     try:
         print(f"Received request for calculation from {calculator}")
-
         if not request.is_json:
             return jsonify({"error": "Request must be JSON"}), 400
-
         data = request.get_json()
         print(f"Data received: {data}")
 
         if not re.match(r'^[a-zA-Z0-9_]+$', calculator):
             return jsonify({"error": "Invalid calculator name"}), 400
 
-        module_name = f'python.calculators.{calculator}'
-        try:
-            calculator_module = importlib.import_module(module_name)
-            print(f"Module imported: {calculator_module}")
-        except ModuleNotFoundError:
-            return jsonify({"error": f"Calculator '{calculator}' not found"}), 404
-
-        solve_function_name = f'{calculator}_solve'
-        if not hasattr(calculator_module, solve_function_name):
-            return jsonify({"error": f"Calculator '{calculator}' has no solve function"}), 404
-
-        calculator_solve = getattr(calculator_module, solve_function_name)
+        solve_function = app.config.get(f'calculator_solve_{calculator}')
+        if not solve_function:
+            return jsonify({"error": f"Calculator '{calculator}' not found or not loaded"}), 404
 
         try:
-            result = calculator_solve(data)
+            result = solve_function(data)
             print(f"Result: {result}")
             return result
         except Exception as e:
             print(f"Calculation error: {str(e)}")
             return jsonify({"error": f"Calculation failed: {str(e)}"}), 500
-
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
-
 @app.route('/calculators/<calculator>')
 def calculator_route(calculator):
     return render_template('calculator.html')
@@ -146,13 +128,32 @@ def load_calculator(calculatorId):
         calculator = next((calc for calc in calculators if calc.get('id') == calculatorId), None)
         if calculator is None:
             return jsonify({'error': 'Calculator not found.'}), 404
+        if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
+            return jsonify({"error": "Invalid calculator name"}), 400
+
+        module_name = f'python.calculators.{calculatorId}'
+        try:
+            calculator_module = importlib.import_module(module_name)
+            print(f"Module imported during load: {calculator_module}")
+
+            solve_function_name = f'{calculatorId}_solve'
+            if not hasattr(calculator_module, solve_function_name):
+                return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
+
+            calculator_solve = getattr(calculator_module, solve_function_name)
+            app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
+            print(f"Solve function stored in app config for {calculatorId}")
+        except ModuleNotFoundError:
+            return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
+        except Exception as e:
+            print(f"Error importing calculator module: {str(e)}")
+            return jsonify({"error": f"Error loading calculator: {str(e)}"}), 500
 
         title = calculator.get('title', 'Calculator')
         subtitle = calculator.get('subtitle', 'Calculator')
-        
-        html = f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n'
+        html = '<div class="input-section">\n'
+        html += f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n'
         html += '<form id="calculatorForm">\n'
-
         selector_input = calculator.get('selectorinput', {})
         if selector_input:
             html += '    <div class="input-group">\n'
@@ -164,7 +165,6 @@ def load_calculator(calculatorId):
                 html += f'            <option value="{value}">{full_text}</option>\n'
             html += '        </select>\n'
             html += '    </div>\n'
-
         numberinput = calculator.get('numberinput', {})
         for input_id, label_text in numberinput.items():
             html += '    <div class="input-group">\n'
@@ -176,7 +176,7 @@ def load_calculator(calculatorId):
             html += '        </div>\n'
             html += f'        <input type="number" id="{input_id}" step="0.001">\n'
             html += '    </div>\n'
-        
+
         textinput = calculator.get('textinput', {})
         for input_id, label_text in textinput.items():
             html += '    <div class="input-group">\n'
@@ -188,18 +188,15 @@ def load_calculator(calculatorId):
             html += '        </div>\n'
             html += f'        <input type="text" id="{input_id}">\n'
             html += '    </div>\n'
-            
 
-        
         box_count = len(numberinput) + len(textinput)
         clear_box_text = "Clear Box" if box_count == 1 else "Clear Boxes"
-
         html += f'<div class="button-group"><button type="Submit" class="generate-btn">Calculate</button><button id="clearButton" class="clear-btn">{clear_box_text}</button></div><div id="error-message" class="error-message"></div>'
-        html += '</form>'
+        html += '</form></div><div class="results-section"><h3>Results:</h3><div id="calculated-values"></div></div></div></div>'
         return jsonify({'html': html})
     except Exception as e:
+        print(f"Error in load_calculator: {str(e)}")
         return jsonify({'error': str(e)}), 500
-    
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
