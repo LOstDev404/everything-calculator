@@ -1,20 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
-    
+    <style>
+        body {
+            opacity: 0;
+        }
+    </style>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Calc</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.style.opacity = 1;
+        });
+    </script>
+
     <nav>
         <div class="nav-content">
             <div class="nav-brand">
-                <h1 style="font-size: 0.875rem;"><a href="/">E-Calc</a>&nbsp;&nbsp;&nbsp;&nbsp;<small style="color: darkgray; font-size: 0.55rem;">(Calc is short for calculator)</small></h1>
+                <h1 style="font-size: 0.875rem;">
+                    <a href="/">E-Calc</a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <small style="color: darkgray; font-size: 0.55rem;">(Calc is short for calculator)</small>
+                </h1>
             </div>
             <div class="nav-actions">
                 <button id="searchToggle" class="search-toggle" aria-label="Toggle search">
@@ -32,10 +46,11 @@
     <main>
         {% block content %}{% endblock %}
     </main>
+
     <footer>
         <p>Please report any miscalculations! | <span id="versionInfo">Loading...</span></p>
     </footer>
-    
+
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
         feather.replace();
@@ -79,11 +94,9 @@
                 document.getElementById('versionInfo').textContent = 'Version unavailable';
             });
     </script>
+
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 
-
     {% block scripts %}{% endblock %}
-
-
 </body>
 </html>
