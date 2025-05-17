@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import matplotlib
 import io
 import base64
+matplotlib.use('Agg') 
 
 def trigonometrypythagoreantheorem_solve(data):
     def plot_right_triangle(angle1, angle2, hypotenuse, adjacent, opposite):
