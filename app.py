@@ -136,7 +136,12 @@ def load_calculator(calculatorId):
         if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
             return jsonify({"error": "Invalid calculator name"}), 400
             
-        calculator_solve, error = import_calculator(calculatorId)
+        calculator_solve = None
+        error = None
+        while calculator_solve is None:
+            calculator_solve, error = import_calculator(calculatorId)
+            if error:
+                break
         
         if error:
             return jsonify({"error": error}), 404 if "not found" in error else 500
