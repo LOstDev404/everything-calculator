@@ -1,11 +1,17 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="container" style="text-align: center;">
+{% extends "base.html" %} {% block content %}
+<div class="container" style="text-align: center">
     <h1>Error 404 | Page Not Found</h1>
-    <p style="color: lightgray;">This page doesn't exist. Double check that you typed the URL correctly, and please report the issue if one of our pages brought you here.</p>
-    <br><br>
-    <button onclick="window.location.href='/'" class="generate-btn" style="width: auto; padding: 10 100px;">Click here to return to the home page</button>
+    <p style="color: lightgray">
+        This page doesn't exist. Double check that you typed the URL correctly,
+        and please report the issue if one of our pages brought you here.
+    </p>
+    <br /><br />
+    <button
+        onclick="window.location.href='/'"
+        class="generate-btn"
+        style="width: auto; padding: 10 100px"
+    >
+        Return to home
+    </button>
 </div>
-{% endblock %}
-{% block scripts %}
-{% endblock %}
+{% endblock %} {% block scripts %} {% endblock %}

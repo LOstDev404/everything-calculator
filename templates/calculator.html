@@ -1,46 +1,45 @@
-{% extends "base.html" %}
-{% block content %}
-<div id="loading-message" style="text-align: center;">
+{% extends "base.html" %} {% block content %}
+<div id="loading-message" style="text-align: center">
     <h1>Loading...</h1>
 </div>
 <div class="container">
-    <div class="calculator-container">
-    </div>
+    <div class="calculator-container"></div>
 </div>
-{% endblock %}
-{% block scripts %}
+{% endblock %} {% block scripts %}
 <script src="https://unpkg.com/feather-icons"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const calculatorContainer = document.querySelector('.calculator-container');
-        const loadingMessage = document.getElementById('loading-message');
-        const parts = window.location.pathname.split('/');
+    document.addEventListener("DOMContentLoaded", function () {
+        const calculatorContainer = document.querySelector(
+            ".calculator-container",
+        );
+        const loadingMessage = document.getElementById("loading-message");
+        const parts = window.location.pathname.split("/");
         const calculatorId = parts[parts.length - 1];
 
         fetch(`/loadcalculator${calculatorId}`)
-            .then(response => {
+            .then((response) => {
                 if (!response.ok) {
-                    window.location.href = '/404';
-                    throw new Error('Calculator not found');
+                    window.location.href = "/404";
+                    throw new Error("Calculator not found");
                 }
                 return response.json();
             })
-            .then(data => {
+            .then((data) => {
                 if (!data || !data.html) {
-                    window.location.href = '/404';
+                    window.location.href = "/404";
                     return;
                 }
 
-                loadingMessage.style.display = 'none';
+                loadingMessage.style.display = "none";
 
-                calculatorContainer.insertAdjacentHTML('afterbegin', data.html);
+                calculatorContainer.insertAdjacentHTML("afterbegin", data.html);
                 feather.replace();
-                console.log('Calculator data loaded successfully');
-                document.dispatchEvent(new CustomEvent('calculatorLoaded'));
+                console.log("Calculator data loaded successfully");
+                document.dispatchEvent(new CustomEvent("calculatorLoaded"));
             })
-            .catch(error => {
-                console.error('Error loading calculator data:', error);
-                window.location.href = '/404';
+            .catch((error) => {
+                console.error("Error loading calculator data:", error);
+                window.location.href = "/404";
             });
     });
 </script>

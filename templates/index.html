@@ -1,42 +1,139 @@
-{% extends "base.html" %}
-{% block content %}
-<div class="container">
-    <h2>Select a Tool/Calculator:</h2>
-
-    <div class="calculator-grid" id="calculatorGrid">
-
-    </div>
+{% extends "base.html" %} {% block content %}
+<div id="loading-message" style="text-align: center">
+  <h1>Loading...</h1>
 </div>
-
+<div id="error-message" style="text-align: center; display: none">
+  <h1>Error 408 | Request Timeout</h1>
+  <p style="color: lightgray">Retrying in <span id="countdown">3</span></p>
+</div>
+<div id="final-error" style="text-align: center; display: none">
+  <h1>Error 408 | Request Timeout</h1>
+  <p style="color: lightgray">
+    Attempt #2 failed, try refreshing, or report the issue if it persists
+  </p>
+  <br /><br />
+  <button
+    onclick="window.location.href='/'"
+    class="generate-btn"
+    style="width: auto; padding: 10px 100px"
+  >
+    Try again
+  </button>
+  <button
+    onclick="window.location.href='https://github.com/LOstDev404/everything-calculator/issues'"
+    class="generate-btn"
+    style="width: auto; margin-left: 20px"
+  >
+    Report an issue
+  </button>
+</div>
+<div id="toolContainer" class="container" style="display: none">
+  <h2>Select a Tool/Calculator:</h2>
+  <div id="calculatorGrid" class="calculator-grid"></div>
+</div>
 <script>
-       document.addEventListener('DOMContentLoaded', function() {
-           if (sessionStorage.getItem('calculatorGridHTML')) {
-               document.getElementById('calculatorGrid').innerHTML = sessionStorage.getItem('calculatorGridHTML');
+  document.addEventListener("DOMContentLoaded", function () {
+    let attemptCount = 0;
+    const maxAttempts = 2;
+    const loadingTimeout = 3000; 
 
-               if (typeof initializeSearchHandling === 'function') {
-                   initializeSearchHandling();
-               }
-           } else {
-               fetch('/home')
-                   .then(response => response.json())
-                   .then(data => {
-                       if (data.error) {
-                           console.error('Error loading calculators:', data.error);
-                           return;
-                       }
-                       const grid = document.getElementById('calculatorGrid');
-                       const sortedCards = data.cards.sort((a, b) => a.localeCompare(b));
-                       grid.innerHTML = sortedCards.join('');
-                       sessionStorage.setItem('calculatorGridHTML', grid.innerHTML);
+    function showElement(id) {
+      document.getElementById(id).style.display = "block";
+    }
 
+    function hideElement(id) {
+      document.getElementById(id).style.display = "none";
+    }
 
-                       if (typeof initializeSearchHandling === 'function') {
-                           initializeSearchHandling();
-                       }
-                   })
-                   .catch(error => console.error('Error fetching calculators:', error));
-           }
-       });
+    function startCountdown() {
+      let seconds = 3;
+      const countdownEl = document.getElementById("countdown");
+      countdownEl.textContent = seconds;
+
+      const interval = setInterval(() => {
+        seconds--;
+        countdownEl.textContent = seconds;
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+          loadCalculators();
+        }
+      }, 1000);
+    }
+
+    function showTimeout() {
+      hideElement("loading-message");
+      hideElement("toolContainer");
+
+      if (attemptCount < maxAttempts) {
+        showElement("error-message");
+        startCountdown();
+      } else {
+        hideElement("error-message");
+        showElement("final-error");
+      }
+    }
+
+    function showSuccess() {
+      hideElement("loading-message");
+      hideElement("error-message");
+      hideElement("final-error");
+      showElement("toolContainer");
+    }
+
+    function loadCalculators() {
+      attemptCount++;
+      hideElement("error-message");
+      showElement("loading-message");
+
+      let loadingTimer = setTimeout(() => {
+        showTimeout();
+      }, loadingTimeout);
+
+      if (sessionStorage.getItem("calculatorGridHTML")) {
+        clearTimeout(loadingTimer);
+        document.getElementById("calculatorGrid").innerHTML =
+          sessionStorage.getItem("calculatorGridHTML");
+        showSuccess();
+        if (typeof initializeSearchHandling === "function") {
+          initializeSearchHandling();
+        }
+      } else {
+        fetch("/home")
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            clearTimeout(loadingTimer);
+
+            if (data.error) {
+              console.error("Error loading calculators:", data.error);
+              showTimeout();
+              return;
+            }
+
+            const grid = document.getElementById("calculatorGrid");
+            const sortedCards = data.cards.sort((a, b) => a.localeCompare(b));
+            grid.innerHTML = sortedCards.join("");
+            sessionStorage.setItem("calculatorGridHTML", grid.innerHTML);
+
+            showSuccess();
+
+            if (typeof initializeSearchHandling === "function") {
+              initializeSearchHandling();
+            }
+          })
+          .catch((error) => {
+            clearTimeout(loadingTimer);
+            console.error("Error fetching calculators:", error);
+            showTimeout();
+          });
+      }
+    }
+    loadCalculators();
+  });
 </script>
-
 {% endblock %}
