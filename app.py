@@ -2,15 +2,16 @@ import os
 from flask import Flask, render_template, request, jsonify
 import re
 import json
-import importlib
 import requests
+
+from python.utils import import_calculator
 
 
 
 
 
 app = Flask(__name__)
-#Search calculator ------------------------
+#Search calculator
 @app.route('/calculate', methods=['POST'])
 def calculate():
     def evaluate_expression(expr):
@@ -134,24 +135,14 @@ def load_calculator(calculatorId):
             return jsonify({'error': 'Calculator not found.'}), 404
         if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
             return jsonify({"error": "Invalid calculator name"}), 400
+            
+        calculator_solve, error = import_calculator(calculatorId)
+        
+        if error:
+            return jsonify({"error": error}), 404 if "not found" in error else 500
 
-        module_name = f'python.calculators.{calculatorId}'
-        try:
-            calculator_module = importlib.import_module(module_name)
-            print(f"Module imported during load: {calculator_module}")
-
-            solve_function_name = f'{calculatorId}_solve'
-            if not hasattr(calculator_module, solve_function_name):
-                return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
-
-            calculator_solve = getattr(calculator_module, solve_function_name)
-            app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
-            print(f"Solve function stored in app config for {calculatorId}")
-        except ModuleNotFoundError:
-            return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
-        except Exception as e:
-            print(f"Error importing calculator module: {str(e)}")
-            return jsonify({"error": f"Error loading calculator: {str(e)}"}), 500
+        app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
+        print(f"Solve function stored in app config for {calculatorId}")
 
         title = calculator.get('title', 'Calculator')
         subtitle = calculator.get('subtitle', 'Calculator')
@@ -201,7 +192,7 @@ def load_calculator(calculatorId):
     except Exception as e:
         print(f"Error in load_calculator: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
+        
 @app.route('/checkversion')
 def version_route():
     github_api_url = "https://api.github.com/repos/LOstDev404/everything-calculator/commits"

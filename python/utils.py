@@ -1,5 +1,26 @@
 from flask import jsonify
 from fractions import Fraction
+import importlib
+#Import Calculator:
+def import_calculator(calculatorId):
+
+    print(f"Importing calculator module with ID: {calculatorId}")
+    try:
+        module_name = f'python.calculators.{calculatorId}'
+        calculator_module = importlib.import_module(module_name)
+        print(f"Module imported: {calculator_module}")
+
+        solve_function_name = f'{calculatorId}_solve'
+        if not hasattr(calculator_module, solve_function_name):
+            return None, f"Calculator '{calculatorId}' has no solve function"
+
+        calculator_solve = getattr(calculator_module, solve_function_name)
+        return calculator_solve, None
+    except ModuleNotFoundError:
+        return None, f"Calculator module '{calculatorId}' not found"
+    except Exception as e:
+        print(f"Error importing calculator module: {str(e)}")
+        return None, f"Error loading calculator: {str(e)}"
 #Fraction percent convert
 def float_to_fraction_percent(value, suffix, usepercent, purefrac, accuracy=1e-8):
   fraction = Fraction(value).limit_denominator()
