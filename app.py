@@ -228,7 +228,7 @@ def load_calculator(calculatorId):
         box_count = len(numberinput) + len(textinput)
         clear_box_text = "Clear Box" if box_count == 1 else "Clear Boxes"
         html += f'<div class="button-group"><button type="Submit" class="generate-btn">Calculate</button><button id="clearButton" class="clear-btn">{clear_box_text}</button></div><div id="error-message" class="error-message"></div>'
-        html += '</form></div><div class="results-section"><h3>Results:</h3><div id="calculated-values"></div></div></div></div>'
+        html += '</form></div><div class="results-section"><h2>Results:</h2><div id="calculated-values"></div></div></div></div>'
 
         return jsonify({'html': html})
     except Exception as e:
