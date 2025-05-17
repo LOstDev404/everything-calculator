@@ -183,7 +183,7 @@ def load_calculator(calculatorId):
             return jsonify({"error": f"Error loading calculator module: {str(e)}"}), 500
 
         title = calculator.get('title', 'Calculator')
-        subtitle = calculator.get('subtitle', 'Calculator')
+        subtitle = calculator.get('subtitle', '')
         html = '<div class="input-section">\n'
         html += f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n'
         html += '<form id="calculatorForm">\n'

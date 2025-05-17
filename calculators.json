@@ -5,12 +5,11 @@
         "description": "Solve for X",
         "tags": "a two step equation 2 step equation algebra x = x equals solve for x",
         "title": "Algebra (Two Step) Calculator:",
-        "subtitle": "",
         "textinput": {
             "algebra2stepequation": "Enter a 2 step equation:"
         }
     },
-    
+
     {
         "id": "patternsequence",
         "name": "Patterns | Arithmetic and Geometric Sequences",
@@ -19,7 +18,7 @@
         "title": "Pattern Calculator:",
         "subtitle": "Fill all of the boxes",
         "selectorinput": {
-           "add_sub" :"Addition/Subtraction | Arithmetic",
+            "add_sub": "Addition/Subtraction | Arithmetic",
             "mult_div": "Multiplication/Division | Geometric"
         },
         "numberinput": {
@@ -28,7 +27,7 @@
             "lastTerm": "Term you're skipping to (n):"
         }
     },
-    
+
     {
         "id": "circlepolygon",
         "name": "Area/Perimeter | Circle and Regular Polygons",
@@ -41,7 +40,7 @@
             "diameterLength": "Enter the lenth of each side, or the diamiter:"
         }
     },
-    
+
     {
         "id": "trigonometrypythagoreantheorem",
         "name": "Trigonometry (Right Triangle) + Pythagorean Theorem",
@@ -56,13 +55,4 @@
             "hypotenuse": "Hypotenuse (C):"
         }
     }
-
-
-
-
-
-
-
-
-    
 ]
