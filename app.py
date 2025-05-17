@@ -100,89 +100,88 @@ def load_cards():
 @app.route('/calculators/solve/<calculator>', methods=['POST'])
 def calculator_calculate(calculator):
     try:
-        print(f"Received request for calculation from {calculator}")
         if not request.is_json:
             return jsonify({"error": "Request must be JSON"}), 400
         data = request.get_json()
-        print(f"Data received: {data}")
 
+        # Validate calculator name using regex (security check)
         if not re.match(r'^[a-zA-Z0-9_]+$', calculator):
             return jsonify({"error": "Invalid calculator name"}), 400
 
+        # Try to get the cached solve function
         solve_function_key = f'calculator_solve_{calculator}'
         solve_function = app.config.get(solve_function_key)
 
         if not solve_function:
-            print(f"Solve function not found in app.config with key: {solve_function_key}")
+            # Function not cached, load it
             try:
                 module_name = f'python.calculators.{calculator}'
-                calculator_module = importlib.import_module(module_name)
+
+                # Check if module is already imported
+                if module_name in sys.modules:
+                    calculator_module = sys.modules[module_name]
+                else:
+                    calculator_module = importlib.import_module(module_name)
+
                 solve_function_name = f'{calculator}_solve'
 
                 if hasattr(calculator_module, solve_function_name):
                     solve_function = getattr(calculator_module, solve_function_name)
+                    # Cache the function for future use
                     app.config[solve_function_key] = solve_function
-                    print(f"Reloaded solve function for {calculator}")
                 else:
                     return jsonify({"error": f"Calculator '{calculator}' has no solve function"}), 404
             except Exception as e:
-                print(f"Error reloading calculator module: {str(e)}")
-                return jsonify({"error": f"Calculator '{calculator}' not found or not loaded"}), 404
+                return jsonify({"error": f"Calculator '{calculator}' not found or not loaded: {str(e)}"}), 404
 
+        # Execute the calculation
         try:
             result = solve_function(data)
-            print(f"Result: {result}")
             return result
         except Exception as e:
-            print(f"Calculation error: {str(e)}")
             return jsonify({"error": f"Calculation failed: {str(e)}"}), 500
     except Exception as e:
-        print(f"Unexpected error: {str(e)}")
-        return jsonify({"error": "An unexpected error occurred"}), 500
+        return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500
 
 #Load Calculator Page
 @app.route('/calculators/<calculator>')
 def calculator_route(calculator):
     return render_template('calculator.html')
 
-#Load Calculator
+#Load Calculator - Optimized to preload solve function
 @app.route('/loadcalculator<calculatorId>')
 def load_calculator(calculatorId):
-    print(f"Loading calculator with ID: {calculatorId}")
     try:
-        with open('calculators.json') as f:
-            calculators = json.load(f)
-        calculator = next((calc for calc in calculators if calc.get('id') == calculatorId), None)
+        calculators_config = getattr(app, '_calculators_cache', None)
+        if calculators_config is None:
+            with open('calculators.json') as f:
+                calculators_config = json.load(f)
+            app._calculators_cache = calculators_config
+
+        calculator = next((calc for calc in calculators_config if calc.get('id') == calculatorId), None)
         if calculator is None:
             return jsonify({'error': 'Calculator not found.'}), 404
         if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
             return jsonify({"error": "Invalid calculator name"}), 400
-
         module_name = f'python.calculators.{calculatorId}'
+        solve_function_key = f'calculator_solve_{calculatorId}'
+
         try:
             if module_name in sys.modules:
-                importlib.reload(sys.modules[module_name])
+                if app.config.get('ENV') == 'development':
+                    importlib.reload(sys.modules[module_name])
                 calculator_module = sys.modules[module_name]
             else:
                 calculator_module = importlib.import_module(module_name)
 
-            print(f"Module imported successfully: {calculator_module}")
-
-            solve_function_name = f'{calculatorId}_solve'
-            if not hasattr(calculator_module, solve_function_name):
-                return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
-
-            calculator_solve = getattr(calculator_module, solve_function_name)
-
-            solve_function_key = f'calculator_solve_{calculatorId}'
-            app.config[solve_function_key] = calculator_solve
-            print(f"Stored solve function with key: {solve_function_key}")
-
-        except ModuleNotFoundError:
-            return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
+            if solve_function_key not in app.config:
+                solve_function_name = f'{calculatorId}_solve'
+                if hasattr(calculator_module, solve_function_name):
+                    app.config[solve_function_key] = getattr(calculator_module, solve_function_name)
+                else:
+                    return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
         except Exception as e:
-            print(f"Error importing calculator module: {str(e)}")
-            return jsonify({"error": f"Error loading calculator: {str(e)}"}), 500
+            return jsonify({"error": f"Error loading calculator module: {str(e)}"}), 500
 
         title = calculator.get('title', 'Calculator')
         subtitle = calculator.get('subtitle', 'Calculator')
@@ -230,11 +229,10 @@ def load_calculator(calculatorId):
         clear_box_text = "Clear Box" if box_count == 1 else "Clear Boxes"
         html += f'<div class="button-group"><button type="Submit" class="generate-btn">Calculate</button><button id="clearButton" class="clear-btn">{clear_box_text}</button></div><div id="error-message" class="error-message"></div>'
         html += '</form></div><div class="results-section"><h3>Results:</h3><div id="calculated-values"></div></div></div></div>'
+
         return jsonify({'html': html})
     except Exception as e:
-        print(f"Error in load_calculator: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-        
+        return jsonify({'error': str(e)}), 500       
 #Version Check for Footer
 @app.route('/checkversion')
 def version_route():

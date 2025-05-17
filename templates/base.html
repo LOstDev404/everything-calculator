@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Calc</title>
@@ -34,6 +35,7 @@
     <footer>
         <p>Please report any miscalculations! | <span id="versionInfo">Loading...</span></p>
     </footer>
+    
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
         feather.replace();
@@ -78,6 +80,10 @@
             });
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+
     {% block scripts %}{% endblock %}
+
+
 </body>
 </html>
