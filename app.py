@@ -128,28 +128,30 @@ def calculator_route(calculator):
 def load_calculator(calculatorId):
     print(f"Loading calculator with ID: {calculatorId}")
     try:
-        if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
-            return jsonify({"error": "Invalid calculator name"}), 400
-
         with open('calculators.json') as f:
             calculators = json.load(f)
-
         calculator = next((calc for calc in calculators if calc.get('id') == calculatorId), None)
         if calculator is None:
             return jsonify({'error': 'Calculator not found.'}), 404
+        if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
+            return jsonify({"error": "Invalid calculator name"}), 400
 
         module_name = f'python.calculators.{calculatorId}'
         try:
             if module_name in sys.modules:
-                calculator_module = importlib.reload(sys.modules[module_name])
+                importlib.reload(sys.modules[module_name])
+                calculator_module = sys.modules[module_name]
             else:
                 calculator_module = importlib.import_module(module_name)
+
+            print(f"Module imported successfully: {calculator_module}")
 
             solve_function_name = f'{calculatorId}_solve'
             if not hasattr(calculator_module, solve_function_name):
                 return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
 
-            app.config[f'calculator_solve_{calculatorId}'] = getattr(calculator_module, solve_function_name)
+            calculator_solve = getattr(calculator_module, solve_function_name)
+            app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
         except ModuleNotFoundError:
             return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
         except Exception as e:
@@ -158,50 +160,50 @@ def load_calculator(calculatorId):
 
         title = calculator.get('title', 'Calculator')
         subtitle = calculator.get('subtitle', 'Calculator')
-
-        html = f'''<div class="input-section">
-<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>
-<form id="calculatorForm">'''
+        html = '<div class="input-section">\n'
+        html += f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n'
+        html += '<form id="calculatorForm">\n'
 
         selector_input = calculator.get('selectorinput', {})
         if selector_input:
-            html += '''<div class="input-group">
-<div class="input-label-group">
-<label for="operation">Operation:</label>
-</div>
-<select id="operation" name="operation">'''
+            html += '    <div class="input-group">\n'
+            html += '        <div class="input-label-group">\n'
+            html += '            <label for="operation">Operation:</label>\n'
+            html += '        </div>\n'
+            html += '        <select id="operation" name="operation">\n'
             for value, full_text in selector_input.items():
-                html += f'<option value="{value}">{full_text}</option>'
-            html += '</select></div>'
+                html += f'            <option value="{value}">{full_text}</option>\n'
+            html += '        </select>\n'
+            html += '    </div>\n'
 
         numberinput = calculator.get('numberinput', {})
         for input_id, label_text in numberinput.items():
-            html += f'''<div class="input-group">
-<div class="input-label-group">
-<label for="{input_id}">{label_text}</label>
-<button type="button" class="clear-single-btn" data-target="{input_id}">
-<i data-feather="trash-2"></i>
-</button>
-</div>
-<input type="number" id="{input_id}" step="0.001">
-</div>'''
+            html += '    <div class="input-group">\n'
+            html += '        <div class="input-label-group">\n'
+            html += f'            <label for="{input_id}">{label_text}</label>\n'
+            html += f'            <button type="button" class="clear-single-btn" data-target="{input_id}">\n'
+            html += '                <i data-feather="trash-2"></i>\n'
+            html += '            </button>\n'
+            html += '        </div>\n'
+            html += f'        <input type="number" id="{input_id}" step="0.001">\n'
+            html += '    </div>\n'
 
         textinput = calculator.get('textinput', {})
         for input_id, label_text in textinput.items():
-            html += f'''<div class="input-group">
-<div class="input-label-group">
-<label for="{input_id}">{label_text}</label>
-<button type="button" class="clear-single-btn" data-target="{input_id}">
-<i data-feather="trash-2"></i>
-</button>
-</div>
-<input type="text" id="{input_id}">
-</div>'''
+            html += '    <div class="input-group">\n'
+            html += '        <div class="input-label-group">\n'
+            html += f'            <label for="{input_id}">{label_text}</label>\n'
+            html += f'            <button type="button" class="clear-single-btn" data-target="{input_id}">\n'
+            html += '                <i data-feather="trash-2"></i>\n'
+            html += '            </button>\n'
+            html += '        </div>\n'
+            html += f'        <input type="text" id="{input_id}">\n'
+            html += '    </div>\n'
 
         box_count = len(numberinput) + len(textinput)
         clear_box_text = "Clear Box" if box_count == 1 else "Clear Boxes"
-        html += f'''<div class="button-group"><button type="Submit" class="generate-btn">Calculate</button><button id="clearButton" class="clear-btn">{clear_box_text}</button></div><div id="error-message" class="error-message"></div></form></div><div class="results-section"><h3>Results:</h3><div id="calculated-values"></div></div></div>'''
-
+        html += f'<div class="button-group"><button type="Submit" class="generate-btn">Calculate</button><button id="clearButton" class="clear-btn">{clear_box_text}</button></div><div id="error-message" class="error-message"></div>'
+        html += '</form></div><div class="results-section"><h3>Results:</h3><div id="calculated-values"></div></div></div></div>'
         return jsonify({'html': html})
     except Exception as e:
         print(f"Error in load_calculator: {str(e)}")
