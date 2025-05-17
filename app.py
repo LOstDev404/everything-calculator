@@ -2,16 +2,15 @@ import os
 from flask import Flask, render_template, request, jsonify
 import re
 import json
-import requests
 import importlib
-
+import requests
 
 
 
 
 
 app = Flask(__name__)
-#Search calculator
+#Search calculator ------------------------
 @app.route('/calculate', methods=['POST'])
 def calculate():
     def evaluate_expression(expr):
@@ -125,9 +124,7 @@ def calculator_calculate(calculator):
 def calculator_route(calculator):
     return render_template('calculator.html')
 @app.route('/loadcalculator<calculatorId>')
-
 def load_calculator(calculatorId):
-    
     print(f"Loading calculator with ID: {calculatorId}")
     try:
         with open('calculators.json') as f:
@@ -137,35 +134,24 @@ def load_calculator(calculatorId):
             return jsonify({'error': 'Calculator not found.'}), 404
         if not re.match(r'^[a-zA-Z0-9_]+$', calculatorId):
             return jsonify({"error": "Invalid calculator name"}), 400
-            
-        calculator_solve = None
-        error = None
-        while calculator_solve is None:
-            print(f"Importing calculator module with ID: {calculatorId}")
-            try:
-                module_name = f'python.calculators.{calculatorId}'
-                calculator_module = importlib.import_module(module_name)
-                print(f"Module imported: {calculator_module}")
 
-                solve_function_name = f'{calculatorId}_solve'
-                if not hasattr(calculator_module, solve_function_name):
-                    return None, f"Calculator '{calculatorId}' has no solve function"
+        module_name = f'python.calculators.{calculatorId}'
+        try:
+            calculator_module = importlib.import_module(module_name)
+            print(f"Module imported during load: {calculator_module}")
 
-                calculator_solve = getattr(calculator_module, solve_function_name)
-                return calculator_solve, None
-            except ModuleNotFoundError:
-                return None, f"Calculator module '{calculatorId}' not found"
-            except Exception as e:
-                print(f"Error importing calculator module: {str(e)}")
-                return None, f"Error loading calculator: {str(e)}"
-            if error:
-                break
-        
-        if error:
-            return jsonify({"error": error}), 404 if "not found" in error else 500
+            solve_function_name = f'{calculatorId}_solve'
+            if not hasattr(calculator_module, solve_function_name):
+                return jsonify({"error": f"Calculator '{calculatorId}' has no solve function"}), 404
 
-        app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
-        print(f"Solve function stored in app config for {calculatorId}")
+            calculator_solve = getattr(calculator_module, solve_function_name)
+            app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
+            print(f"Solve function stored in app config for {calculatorId}")
+        except ModuleNotFoundError:
+            return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
+        except Exception as e:
+            print(f"Error importing calculator module: {str(e)}")
+            return jsonify({"error": f"Error loading calculator: {str(e)}"}), 500
 
         title = calculator.get('title', 'Calculator')
         subtitle = calculator.get('subtitle', 'Calculator')

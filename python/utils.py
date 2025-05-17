@@ -1,6 +1,5 @@
 from flask import jsonify
 from fractions import Fraction
-
 #Fraction percent convert
 def float_to_fraction_percent(value, suffix, usepercent, purefrac, accuracy=1e-8):
   fraction = Fraction(value).limit_denominator()
