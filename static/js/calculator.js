@@ -25,6 +25,7 @@ async function handleFormSubmit(e) {
   const errorMessage = document.getElementById('error-message');
   const calculatedValues = document.getElementById('calculated-values');
 
+  calculatedValues.innerHTML = '<p>Loading...</p>';
   const formData = {};
   const formElements = calculatorForm.elements;
   for (let i = 0; i < formElements.length; i++) {
