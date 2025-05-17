@@ -4,7 +4,7 @@ import re
 import json
 import importlib
 import requests
-
+import sys
 
 
 
@@ -123,6 +123,7 @@ def calculator_calculate(calculator):
 @app.route('/calculators/<calculator>')
 def calculator_route(calculator):
     return render_template('calculator.html')
+    
 @app.route('/loadcalculator<calculatorId>')
 def load_calculator(calculatorId):
     print(f"Loading calculator with ID: {calculatorId}")
@@ -137,8 +138,13 @@ def load_calculator(calculatorId):
 
         module_name = f'python.calculators.{calculatorId}'
         try:
-            calculator_module = importlib.import_module(module_name)
-            print(f"Module imported during load: {calculator_module}")
+            if module_name in sys.modules:
+                importlib.reload(sys.modules[module_name])
+                calculator_module = sys.modules[module_name]
+            else:
+                calculator_module = importlib.import_module(module_name)
+
+            print(f"Module imported successfully: {calculator_module}")
 
             solve_function_name = f'{calculatorId}_solve'
             if not hasattr(calculator_module, solve_function_name):
@@ -146,7 +152,6 @@ def load_calculator(calculatorId):
 
             calculator_solve = getattr(calculator_module, solve_function_name)
             app.config[f'calculator_solve_{calculatorId}'] = calculator_solve
-            print(f"Solve function stored in app config for {calculatorId}")
         except ModuleNotFoundError:
             return jsonify({"error": f"Calculator module '{calculatorId}' not found"}), 404
         except Exception as e:
@@ -158,6 +163,7 @@ def load_calculator(calculatorId):
         html = '<div class="input-section">\n'
         html += f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n'
         html += '<form id="calculatorForm">\n'
+
         selector_input = calculator.get('selectorinput', {})
         if selector_input:
             html += '    <div class="input-group">\n'
@@ -169,6 +175,7 @@ def load_calculator(calculatorId):
                 html += f'            <option value="{value}">{full_text}</option>\n'
             html += '        </select>\n'
             html += '    </div>\n'
+
         numberinput = calculator.get('numberinput', {})
         for input_id, label_text in numberinput.items():
             html += '    <div class="input-group">\n'
