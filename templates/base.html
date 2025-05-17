@@ -30,23 +30,20 @@
         {% block content %}{% endblock %}
     </main>
     <footer>
-        <p>Please report any miscalculations! | 404</p>
+        <p>Please report any miscalculations! | <span id="versionInfo">Loading...</span></p>
     </footer>
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
         feather.replace();
-
         const searchToggle = document.getElementById('searchToggle');
         const searchContainer = document.getElementById('searchContainer');
         const searchInput = document.getElementById('calculatorSearch');
-
         searchToggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             searchContainer.classList.add('search-expanded');
             setTimeout(() => searchInput.focus(), 50);
         });
-
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 const currentPath = window.location.pathname;
@@ -55,16 +52,28 @@
                 }
             }
         });
-
         document.addEventListener('click', function(e) {
             if (!searchContainer.contains(e.target) && !searchToggle.contains(e.target)) {
                 searchContainer.classList.remove('search-expanded');
             }
         });
-
         searchContainer.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+        fetch('/checkversion')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('versionInfo').textContent = data;
+            })
+            .catch(error => {
+                console.error('Error fetching version:', error);
+                document.getElementById('versionInfo').textContent = 'Version unavailable';
+            });
     </script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     {% block scripts %}{% endblock %}

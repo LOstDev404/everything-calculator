@@ -3,6 +3,10 @@ from flask import Flask, render_template, request, jsonify
 import re
 import json
 import importlib
+import requests
+
+
+
 
 
 app = Flask(__name__)
@@ -197,6 +201,27 @@ def load_calculator(calculatorId):
     except Exception as e:
         print(f"Error in load_calculator: {str(e)}")
         return jsonify({'error': str(e)}), 500
+
+@app.route('/checkversion')
+def version_route():
+    github_api_url = "https://api.github.com/repos/LOstDev404/everything-calculator/commits"
+    try:
+        response = requests.get(github_api_url, headers={
+            'Accept': 'application/vnd.github.v3+json',
+        })
+        if response.status_code == 200:
+            commits_data = response.json()
+            if commits_data and len(commits_data) > 0:
+                latest_commit = commits_data[0]
+                commit_name = latest_commit['commit']['message'].split('\n')[0]
+                version = f"v{commit_name}"
+                return jsonify(version)
+            else:
+                return jsonify("No commits found")
+        else:
+            return jsonify(f"API Error: {response.status_code}")
+    except Exception as e:
+        return jsonify(f"Error: {str(e)}")
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
