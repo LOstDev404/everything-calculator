@@ -104,20 +104,16 @@ def calculator_calculate(calculator):
             return jsonify({"error": "Request must be JSON"}), 400
         data = request.get_json()
 
-        # Validate calculator name using regex (security check)
         if not re.match(r'^[a-zA-Z0-9_]+$', calculator):
             return jsonify({"error": "Invalid calculator name"}), 400
 
-        # Try to get the cached solve function
         solve_function_key = f'calculator_solve_{calculator}'
         solve_function = app.config.get(solve_function_key)
 
         if not solve_function:
-            # Function not cached, load it
             try:
                 module_name = f'python.calculators.{calculator}'
 
-                # Check if module is already imported
                 if module_name in sys.modules:
                     calculator_module = sys.modules[module_name]
                 else:
@@ -127,14 +123,12 @@ def calculator_calculate(calculator):
 
                 if hasattr(calculator_module, solve_function_name):
                     solve_function = getattr(calculator_module, solve_function_name)
-                    # Cache the function for future use
                     app.config[solve_function_key] = solve_function
                 else:
                     return jsonify({"error": f"Calculator '{calculator}' has no solve function"}), 404
             except Exception as e:
                 return jsonify({"error": f"Calculator '{calculator}' not found or not loaded: {str(e)}"}), 404
 
-        # Execute the calculation
         try:
             result = solve_function(data)
             return result
