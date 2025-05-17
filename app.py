@@ -8,6 +8,11 @@ import sys
 import matplotlib 
 import numpy as np
 import sympy
+import math
+import matplotlib.pyplot as plt
+import io
+import base64
+from sympy import Eq, symbols, solve, sympify
 
 
 
