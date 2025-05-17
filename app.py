@@ -3,8 +3,8 @@ from flask import Flask, render_template, request, jsonify
 import re
 import json
 import requests
+import importlib
 
-from python.utils import import_calculator
 
 
 
@@ -125,7 +125,9 @@ def calculator_calculate(calculator):
 def calculator_route(calculator):
     return render_template('calculator.html')
 @app.route('/loadcalculator<calculatorId>')
+
 def load_calculator(calculatorId):
+    
     print(f"Loading calculator with ID: {calculatorId}")
     try:
         with open('calculators.json') as f:
@@ -139,7 +141,23 @@ def load_calculator(calculatorId):
         calculator_solve = None
         error = None
         while calculator_solve is None:
-            calculator_solve, error = import_calculator(calculatorId)
+            print(f"Importing calculator module with ID: {calculatorId}")
+            try:
+                module_name = f'python.calculators.{calculatorId}'
+                calculator_module = importlib.import_module(module_name)
+                print(f"Module imported: {calculator_module}")
+
+                solve_function_name = f'{calculatorId}_solve'
+                if not hasattr(calculator_module, solve_function_name):
+                    return None, f"Calculator '{calculatorId}' has no solve function"
+
+                calculator_solve = getattr(calculator_module, solve_function_name)
+                return calculator_solve, None
+            except ModuleNotFoundError:
+                return None, f"Calculator module '{calculatorId}' not found"
+            except Exception as e:
+                print(f"Error importing calculator module: {str(e)}")
+                return None, f"Error loading calculator: {str(e)}"
             if error:
                 break
         
@@ -197,7 +215,7 @@ def load_calculator(calculatorId):
     except Exception as e:
         print(f"Error in load_calculator: {str(e)}")
         return jsonify({'error': str(e)}), 500
-        
+
 @app.route('/checkversion')
 def version_route():
     github_api_url = "https://api.github.com/repos/LOstDev404/everything-calculator/commits"
