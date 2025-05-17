@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('calculator.js loaded');
 
-  // Initialize form event listeners once the calculator data is loaded
   document.addEventListener('calculatorLoaded', initializeCalculatorForm);
 
-  // Set up event delegation for buttons that might be dynamically added
   setupButtonEventDelegation();
 });
 
@@ -18,7 +16,6 @@ function initializeCalculatorForm() {
     calculatorForm.addEventListener('submit', handleFormSubmit);
   }
 
-  // Initialize clear buttons that are now in the DOM
   initializeClearButtons();
 }
 
