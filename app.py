@@ -93,7 +93,7 @@ def load_cards():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-#Calculator Code
+#Calculator Solve Code
 @app.route('/calculators/solve/<calculator>', methods=['POST'])
 def calculator_calculate(calculator):
     try:
@@ -120,12 +120,15 @@ def calculator_calculate(calculator):
     except Exception as e:
         print(f"Unexpected error: {str(e)}")
         return jsonify({"error": "An unexpected error occurred"}), 500
+        
+#Load Calculator Page
 @app.route('/calculators/<calculator>')
 def calculator_route(calculator):
     return render_template('calculator.html')
-    
+#Load Calculator
 @app.route('/loadcalculator<calculatorId>')
 def load_calculator(calculatorId):
+    
     print(f"Loading calculator with ID: {calculatorId}")
     try:
         with open('calculators.json') as f:
@@ -208,7 +211,8 @@ def load_calculator(calculatorId):
     except Exception as e:
         print(f"Error in load_calculator: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
+        
+#Version Check for Footer
 @app.route('/checkversion')
 def version_route():
     github_api_url = "https://api.github.com/repos/LOstDev404/everything-calculator/commits"
