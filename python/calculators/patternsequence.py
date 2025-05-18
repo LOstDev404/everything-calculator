@@ -1,5 +1,5 @@
 from flask import jsonify
-
+from python.utils import float_to_fraction_percent
 def patternsequence_solve(data):
     try:
         operation = data['operation']
@@ -14,17 +14,15 @@ def patternsequence_solve(data):
 
             lastTermCalculated = firstTerm * (commonRatio ** (lastTerm - 1))
         else:
-            result = jsonify({'error': 'Failed to calculate...'})
-            return result
+            return jsonify({'error': 'Failed to calculate...'})
             
-        result = jsonify({
+            
+        return jsonify({
             'values': {
                 'lastTermCalculated': f"Term {lastTerm:.3} is {lastTermCalculated:.3f}",
+                'lastTermCalculatedFrac': f"Term {lastTerm} is {float_to_fraction_percent(lastTermCalculated)}"
             }
         })
-        return result
-        
     except Exception as e:
-        result = jsonify({'error': str(e)})
+        return jsonify({'error': str(e)})
         
-    

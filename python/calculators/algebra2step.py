@@ -49,9 +49,20 @@ def algebra2step_solve(data):
         formatted_solution = format_solution(solution[0], original_var)
         formatted_solution = formatted_solution.replace('sqrt', '√')
         formatted_solution = formatted_solution.replace('*', '')
+        
+        if re.search(r"[^0-9/\-]", str(solution[0])):
+            return jsonify({
+                'values': {
+                    'solution': f"{original_var} = {formatted_solution}"
+                }
+            })
+
+        fractional_solution = float_to_fraction_percent(solution[0])
+
         return jsonify({
             'values': {
-                'solution': formatted_solution,
+                'solution': f"{original_var} = {formatted_solution}",
+                'solutionFrac': f"{original_var} = {fractional_solution}"
             }
         })
 
@@ -88,7 +99,7 @@ def format_solution(solution, variable):
     solution_str = str(solution)
     if ('(' in solution_str or ')' in solution_str or 
         '+' in solution_str or '*' in solution_str) and '/' in solution_str:
-        return f"{variable} = {solution_str}"
+        return f"{solution_str}"
     if '/' in solution_str:
         try:
             if solution_str.count('/') == 1:
@@ -96,21 +107,21 @@ def format_solution(solution, variable):
                 numerator = numerator.strip('()')
                 denominator = denominator.strip('()')
                 decimal_value = float(numerator) / float(denominator)
-                return f"{variable} = {float_to_fraction_percent(decimal_value, '', False, False)}"
+                return f"{decimal_value:.3f}"
             else:
                 decimal_value = float(eval(solution_str))
-                return f"{variable} = {float_to_fraction_percent(decimal_value, '', False, False)}"
+                return f"{decimal_value:.3f}"
         except (ValueError, SyntaxError, NameError):
-            return f"{variable} = {solution_str}"
+            return f"{solution_str}"
     if solution_str.startswith('-'):
         try:
             decimal_value = float(solution_str)
-            return f"{variable} = {float_to_fraction_percent(decimal_value, '', False, False)}"
+            return f"{decimal_value:.3f}"
         except ValueError:
-            return f"{variable} = {solution_str}"
+            return f"{solution_str}"
 
     try:
         decimal_value = float(solution_str)
-        return f"{variable} = {float_to_fraction_percent(decimal_value, '', False, False)}"
+        return f"{decimal_value:.3f}"
     except ValueError:
-        return f"{variable} = {solution_str}"
+        return f"{solution_str}"

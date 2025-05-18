@@ -64,6 +64,7 @@ async function handleFormSubmit(e) {
 
       calculatedValues.innerHTML = '';
 
+
       if (data.plot) {
         const visualizationSection = document.createElement('div');
         visualizationSection.id = 'visualization-section';
@@ -81,32 +82,64 @@ async function handleFormSubmit(e) {
       }
 
       if (data.values) {
-        Object.keys(data.values).forEach(key => {
-          const resultsContainer = document.createElement('div');
-          resultsContainer.className = 'results-container';
+        const entries = Object.entries(data.values);
+        const decimalEntries  = entries.filter(([key]) => !key.toLowerCase().includes('frac'));
+        const fractionEntries = entries.filter(([key]) =>  key.toLowerCase().includes('frac'));
 
-          const valuePara = document.createElement('p');
-          valuePara.id = `${key}-text`;
-          valuePara.textContent = data.values[key];
+        function makeResultRow(key, val) {
+          const container = document.createElement('div');
+          container.className = 'results-container';
+          container.style.marginBottom = '0.5em';
 
-          const copyButton = document.createElement('button');
-          copyButton.type = 'button';
-          copyButton.className = 'copy-btn';
-          copyButton.setAttribute('data-target', `#${key}-text`);
+          const p = document.createElement('p');
+          p.id = `${key}-text`;
+          p.textContent = val;
 
-          const copyIcon = document.createElement('i');
-          copyIcon.setAttribute('data-feather', 'copy');
-          copyButton.appendChild(copyIcon);
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'copy-btn';
+          btn.setAttribute('data-target', `#${key}-text`);
+          btn.innerHTML = `<i data-feather="copy"></i>`;
 
-          resultsContainer.appendChild(valuePara);
-          resultsContainer.appendChild(copyButton);
-          calculatedValues.appendChild(resultsContainer);
-        });
-
-        if (window.feather) {
-          feather.replace();
+          container.append(p, btn);
+          return container;
         }
+
+        if (decimalEntries.length === 0 || fractionEntries.length === 0) {
+          entries.forEach(([key, val]) =>
+            calculatedValues.appendChild(makeResultRow(key, val))
+          );
+        } else {
+          const makeCategory = (title, items) => {
+            const div = document.createElement('div');
+            div.className = 'category-container';
+
+            const h3 = document.createElement('h3');
+            h3.textContent = title;
+            h3.style.fontFamily = "'Roboto', sans-serif";
+            div.appendChild(h3);
+
+            items.forEach(([key, val]) =>
+              div.appendChild(makeResultRow(key, val))
+            );
+            return div;
+          };
+
+          const decimalsTitle  = decimalEntries.length  === 1 ? 'Decimal:'  : 'Decimals:';
+          const fractionsTitle = fractionEntries.length === 1 ? 'Fraction:' : 'Fractions:';
+
+          calculatedValues.appendChild(
+            makeCategory(decimalsTitle, decimalEntries)
+          );
+          calculatedValues.appendChild(
+            makeCategory(fractionsTitle, fractionEntries)
+          );
+        }
+
+        if (window.feather) feather.replace();
       }
+
+
     }
   } catch (error) {
     errorMessage.style.display = 'block';

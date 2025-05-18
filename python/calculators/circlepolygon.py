@@ -18,20 +18,18 @@ def circlepolygon_solve(data):
     
             perimeter = sides * length
             area = (sides * length**2) / (4 * math.tan(math.pi / sides))
-    
-            areaFrac = float_to_fraction_percent(area, '²', False, True)
-            perimeterFrac = float_to_fraction_percent(perimeter, '²', False, True)
+
             sumOfInt = (sides - 2) * 180
             shape = shape_name(sides)
-            result = jsonify({
+            return jsonify({
                 'values': {
                     'a1shape': f"Shape: {shape}",
-                    'a2areaFrac': f"Area: {areaFrac}",
-                    'a3perimeterFrac': f"Perimeter: {perimeterFrac}",
+                    'a2area': f"Area: {area:.3f}",
+                    'a3perimeterc': f"Perimeter: {perimeter:.3f}",
                     'a4radiusDiameterInterior': f"Sum of Interior Angles: {sumOfInt}"
                 }
             })
-            return result
+        
     
         elif radiusSides != '' and diameterLength == '':
             radius = float(radiusSides)
@@ -42,15 +40,15 @@ def circlepolygon_solve(data):
             area = math.pi * radius**2
             areaFrac = radius**2
             shape = "Circle"
-            result = jsonify({
+            return jsonify({
                 'values': {
                     'a1shape': f"Shape: {shape}",
-                    'a2areaFrac': f"Area: {area:.3f}² | {areaFrac:.3f}π²",
-                    'a3perimeterFrac': f"Circumference: {perimeter:.3f}² | {perimeterFrac:.3f}π²",
-                    'a4radiusDiameterInterior': f"Diameter: {diameter}"
+                    'a2area': f"Area: {areaFrac:.3f}π²",
+                    'a3perimeter': f"Circumference: {perimeterFrac:.3f}π²",
+                    'a4radiusDiameterInterior': f"Diameter: {diameter:.3f}"
                 }
             })
-            return result
+           
     
         elif diameterLength != '' and  radiusSides == '':
             diameter = float(diameterLength)
@@ -61,19 +59,19 @@ def circlepolygon_solve(data):
             area = math.pi * radius**2
             areaFrac = radius**2
             shape = "Circle"
-            result = jsonify({
+            return jsonify({
                 'values': {
                     'a1shape': f"Shape: {shape}",
-                    'a2areaFrac': f"Area: {area:.3f}² | {areaFrac:.3f}π²",
-                    'a3perimeterFrac': f"Circumference: {perimeter:.3f}² | {perimeterFrac:.3f}π²",
-                    'a4radiusDiameterInterior': f"Radius: {radius}"
+                    'a2area': f"Area: {areaFrac:.3f}π²",
+                    'a3perimeter': f"Circumference: {perimeterFrac:.3f}π²",
+                    'a4radiusDiameterInterior': f"Radius: {radius:.3f}"
                 }
             })
-            return result
+            
     
         else:
-            result = jsonify({'error': 'Please fill at least one of the input fields'})
-            return result
+            return jsonify({'error': 'Please fill at least one of the input fields'})
+            
             
     except Exception as e:
         result = jsonify({'error': str(e)})

@@ -72,8 +72,8 @@ def trigonometrypythagoreantheorem_solve(data):
 
         provided_params = sum(param is not None for param in [angle1, hypotenuse, opposite, adjacent])
         if provided_params != 2:
-            result = {'error': 'Please provide exactly two variables to generate a triangle'}
-            return jsonify(result)
+            return jsonify({'error': 'Please provide exactly two variables to generate a triangle'})
+            
 
         if angle1 is not None:
             angle1_rad = math.radians(angle1)
@@ -119,22 +119,29 @@ def trigonometrypythagoreantheorem_solve(data):
         plot_url = plot_right_triangle(angle1, angle2, hypotenuse, adjacent, opposite)
 
         formatted_values = {
-            'a1angle1': f"Angle 1: {float_to_fraction_percent(angle1, '°', False, False)}",
-            'a2angle2': f"Angle 2: {float_to_fraction_percent(angle2, '°', False, False)}",
-            'a3adjacent': f"Adjacent (A): {float_to_fraction_percent(adjacent, '', False, False)}",
-            'a4opposite': f"Opposite (B): {float_to_fraction_percent(opposite, '', False, False)}",
-            'a5hypotenuse': f"Hypotenuse (C): {float_to_fraction_percent(hypotenuse, '', False, False)}",
-            'a6perimeter': f"Perimeter: {float_to_fraction_percent(perimeter, '', False, False)}",
-            'a7area': f"Area: {float_to_fraction_percent(area, '', False, False)}",
+            'a1angle1': f"Angle 1: {angle1:.3f}°",
+            'a2angle2': f"Angle 2: {angle2:.3f}°",
+            'a3adjacent': f"Adjacent (A): {adjacent:.3f}",
+            'a4opposite': f"Opposite (B): {opposite:.3f}",
+            'a5hypotenuse': f"Hypotenuse (C): {hypotenuse:.3f}",
+            'a6perimeter': f"Perimeter: {perimeter:.3f}",
+            'a7area': f"Area: {area:.3f}",
+            
+            'a1angle1Frac': f"Angle 1: {float_to_fraction_percent(angle1)}°",
+            'a2angle2Frac': f"Angle 2: {float_to_fraction_percent(angle2)}°",
+            'a3adjacentFrac': f"Adjacent (A): {float_to_fraction_percent(adjacent)}",
+            'a4oppositeFrac': f"Opposite (B): {float_to_fraction_percent(opposite)}",
+            'a5hypotenuseFrac': f"Hypotenuse (C): {float_to_fraction_percent(hypotenuse)}",
+            'a6perimeterFrac': f"Perimeter: {float_to_fraction_percent(perimeter)}",
+            'a7areaFrac': f"Area: {float_to_fraction_percent(area)}",
         }
 
-        result = {
+        return jsonify({
             'plot': plot_url,
             'values': formatted_values
-        }
+        })
 
-        return jsonify(result)
 
     except Exception as e:
-        result = {'error': str(e)}
-        return jsonify(result)
+        return jsonify({'error': str(e)})
+        
