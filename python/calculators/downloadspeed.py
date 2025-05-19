@@ -101,7 +101,8 @@ def downloadspeed_solve(data):
         size_desc = f"{file_size_value} TB"
     else:
         size_desc = f"{file_size_mb} MB"
-
+    if speed_unit == 'mb/s':
+        speed_unit = 'MB/s'
     return jsonify({
         'values': {
             'solution': f"It will take {time_desc} to download {size_desc} at {download_speed} {speed_unit}."
