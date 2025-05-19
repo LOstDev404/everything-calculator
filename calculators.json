@@ -54,5 +54,22 @@
             "opposite": "Opposite (B):",
             "hypotenuse": "Hypotenuse (C):"
         }
+    },
+    {
+        "id": "downloadspeed",
+        "name": "Download Time Calculator",
+        "description": "Calculate download time based on speed and file size",
+        "tags": "download speed calculator mbps mb/s time file size calculate download speed calculate download time",
+        "title": "Download Time Calculator:",
+        "selectorinput": {
+            "mb/s": "MB/s",
+            "mbps": "Mbps"
+        },
+        "numberinput": {
+            "downloadSpeed": "Download Speed:"
+        }, 
+        "textinput": {
+            "fileSize": "File Size (end with unit type} Ex: 5.4gb:"
+        }
     }
 ]
