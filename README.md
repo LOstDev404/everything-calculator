@@ -48,7 +48,7 @@ If you find a bug or have a feature request, please feel free to open an issue i
        "tags": "calculator example calculator ex readme",
        "title": "Example Calculator:",
        "subtitle": "Fill all of the boxes and select an option",
-       "selectorinputs": {
+       "selectorinput": {
             "exampleOptions": {
                 "label": "Select an option:",
                 "options": {
