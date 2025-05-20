@@ -232,7 +232,7 @@ def load_calculator(calculatorId):
         html_parts.append(f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n')
         html_parts.append('<form id="calculatorForm">\n')
 
-        selector_inputs = calculator.get('selectorinputs', {})
+        selector_inputs = calculator.get('selectorinput', {})
         if selector_inputs:
             for selector_id, selector_config in selector_inputs.items():
                 selector_label = selector_config.get('label', 'Operation:')
@@ -248,20 +248,6 @@ def load_calculator(calculatorId):
                 html_parts.append('        </select>\n')
                 html_parts.append('    </div>\n')
         
-        # For backward compatibility
-        selector_input = calculator.get('selectorinput', {})
-        selector_label = calculator.get('selectorlabel', 'Operation:')
-        if selector_input:
-            html_parts.append('    <div class="input-group">\n')
-            html_parts.append('        <div class="input-label-group">\n')
-            html_parts.append(f'            <label for="operation">{selector_label}</label>\n')
-            html_parts.append('        </div>\n')
-            html_parts.append('        <select id="operation" name="operation">\n')
-            for value, full_text in selector_input.items():
-                html_parts.append(f'            <option value="{value}">{full_text}</option>\n')
-            html_parts.append('        </select>\n')
-            html_parts.append('    </div>\n')
-
         numberinput = calculator.get('numberinput', {})
         for input_id, label_text in numberinput.items():
             html_parts.append('    <div class="input-group">\n')

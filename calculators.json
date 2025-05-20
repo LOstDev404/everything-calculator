@@ -17,7 +17,7 @@
         "tags": "patterns pattern arithmetic sequence geometric sequence",
         "title": "Pattern Calculator:",
         "subtitle": "Fill all of the boxes",
-        "selectorinputs": {
+        "selectorinput": {
             "sequenceType": {
                 "label": "Sequence Type:",
                 "options": {
@@ -66,7 +66,7 @@
         "description": "Calculate download time based on speed and file size",
         "tags": "download speed calculator mbps mb/s time file size calculate download speed calculate download time",
         "title": "Download Time Calculator:",
-        "selectorinputs": {
+        "selectorinput": {
             "speedUnit": {
                 "label": "Speed Unit:",
                 "options": {
