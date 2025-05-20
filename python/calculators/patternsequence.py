@@ -2,7 +2,7 @@ from flask import jsonify
 from python.utils import float_to_fraction_percent
 def patternsequence_solve(data):
     try:
-        operation = data['operation']
+        operation = data['sequenceType']
         firstTerm = float(data['firstTerm'])
         secondTerm = float(data['secondTerm'])
         lastTerm = float(data['lastTerm'])

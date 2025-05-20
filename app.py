@@ -18,6 +18,40 @@ from functools import lru_cache
 
 app = Flask(__name__)
 
+# Functions to clean decimal outputs-------
+def clean_decimal_zeros(value):
+    if isinstance(value, str):
+        
+        def replace_number(match):
+            num = match.group(0)
+            try:
+                
+                float_num = float(num)
+                
+                if float_num.is_integer():
+                    return str(int(float_num))
+                else:
+                    return str(float_num).rstrip('0').rstrip('.') if '.' in str(float_num) else str(float_num)
+            except:
+                return num
+        
+        return re.sub(r'\d+\.\d+', replace_number, value)
+    return value
+
+def clean_values_dict(values_dict):
+    if not isinstance(values_dict, dict):
+        return values_dict
+    
+    cleaned_dict = {}
+    for key, value in values_dict.items():
+        if isinstance(value, dict):
+            cleaned_dict[key] = clean_values_dict(value)
+        elif isinstance(value, str):
+            cleaned_dict[key] = clean_decimal_zeros(value)
+        else:
+            cleaned_dict[key] = value
+    return cleaned_dict
+
 # Cache calculator.json ------------------------
 @lru_cache(maxsize=1)
 def get_calculators_config():
@@ -153,6 +187,14 @@ def calculator_calculate(calculator):
         try:
             solve_function = get_calculator_solve_function(calculator)
             result = solve_function(data)
+            
+            # Clean up the result to remove trailing zeros in decimal values
+            if isinstance(result.json, dict):
+                result_data = result.json
+                if 'values' in result_data:
+                    result_data['values'] = clean_values_dict(result_data['values'])
+                return jsonify(result_data)
+            
             return result
         except ValueError as e:
             return jsonify({"error": str(e)}), 404
@@ -190,11 +232,29 @@ def load_calculator(calculatorId):
         html_parts.append(f'<h2>{title} <small style="color: lightgray;">{subtitle}</small></h2>\n')
         html_parts.append('<form id="calculatorForm">\n')
 
+        selector_inputs = calculator.get('selectorinputs', {})
+        if selector_inputs:
+            for selector_id, selector_config in selector_inputs.items():
+                selector_label = selector_config.get('label', 'Operation:')
+                selector_options = selector_config.get('options', {})
+                
+                html_parts.append('    <div class="input-group">\n')
+                html_parts.append('        <div class="input-label-group">\n')
+                html_parts.append(f'            <label for="{selector_id}">{selector_label}</label>\n')
+                html_parts.append('        </div>\n')
+                html_parts.append(f'        <select id="{selector_id}" name="{selector_id}">\n')
+                for value, full_text in selector_options.items():
+                    html_parts.append(f'            <option value="{value}">{full_text}</option>\n')
+                html_parts.append('        </select>\n')
+                html_parts.append('    </div>\n')
+        
+        # For backward compatibility
         selector_input = calculator.get('selectorinput', {})
+        selector_label = calculator.get('selectorlabel', 'Operation:')
         if selector_input:
             html_parts.append('    <div class="input-group">\n')
             html_parts.append('        <div class="input-label-group">\n')
-            html_parts.append('            <label for="operation">Operation:</label>\n')
+            html_parts.append(f'            <label for="operation">{selector_label}</label>\n')
             html_parts.append('        </div>\n')
             html_parts.append('        <select id="operation" name="operation">\n')
             for value, full_text in selector_input.items():

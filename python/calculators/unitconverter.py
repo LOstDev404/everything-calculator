@@ -12,19 +12,15 @@ def unitconverter_solve(data):
             return jsonify({'error': 'Invalid input format. Please enter a value followed by a unit (e.g., "15 feet", "2.5 kg")'})
         
         value, unit = parsed
-        
         measurement_type, base_unit, base_value = identify_measurement_type(value, unit)
         
         if not measurement_type:
             return jsonify({'error': f'Unknown unit: {unit}'})
             
-        conversions = convert_to_all_units(measurement_type, base_unit, base_value)
-        
+        conversions = convert_to_all_units(measurement_type, base_value)
         formatted_results = format_results(conversions, measurement_type)
         
-        return jsonify({
-            'values': formatted_results
-        })
+        return jsonify({'values': formatted_results})
         
     except Exception as e:
         return jsonify({'error': str(e)})
@@ -66,89 +62,92 @@ def parse_input(input_text):
         'tsp': 'teaspoons', 'teaspoon': 'teaspoons', 'teaspoons': 'teaspoons'
     }
     
-    for key, normalized_unit in unit_mapping.items():
-        if unit == key:
-            unit = normalized_unit
-            break
-    
-    return value, unit
+    return value, unit_mapping.get(unit, unit)
 
 def identify_measurement_type(value, unit):
     conversion_factors = {
-        'feet': ('length', 'meters', lambda x: x * 0.3048),
-        'inches': ('length', 'meters', lambda x: x * 0.0254),
-        'yards': ('length', 'meters', lambda x: x * 0.9144),
-        'miles': ('length', 'meters', lambda x: x * 1609.34),
-        'meters': ('length', 'meters', lambda x: x),
-        'centimeters': ('length', 'meters', lambda x: x * 0.01),
-        'millimeters': ('length', 'meters', lambda x: x * 0.001),
-        'kilometers': ('length', 'meters', lambda x: x * 1000),
-        
-        'grams': ('mass', 'grams', lambda x: x),
-        'kilograms': ('mass', 'grams', lambda x: x * 1000),
-        'milligrams': ('mass', 'grams', lambda x: x * 0.001),
-        'pounds': ('mass', 'grams', lambda x: x * 453.592),
-        'ounces': ('mass', 'grams', lambda x: x * 28.3495),
-        'stones': ('mass', 'grams', lambda x: x * 6350.29),
-        'tonnes': ('mass', 'grams', lambda x: x * 1000000),
-        
-        'liters': ('volume', 'liters', lambda x: x),
-        'milliliters': ('volume', 'liters', lambda x: x * 0.001),
-        'gallons': ('volume', 'liters', lambda x: x * 3.78541),
-        'quarts': ('volume', 'liters', lambda x: x * 0.946353),
-        'pints': ('volume', 'liters', lambda x: x * 0.473176),
-        'cups': ('volume', 'liters', lambda x: x * 0.236588),
-        'fluid ounces': ('volume', 'liters', lambda x: x * 0.0295735),
-        'tablespoons': ('volume', 'liters', lambda x: x * 0.0147868),
-        'teaspoons': ('volume', 'liters', lambda x: x * 0.00492892)
+        'length': {
+            'meters': {
+                'feet': 0.3048,
+                'inches': 0.0254,
+                'yards': 0.9144,
+                'miles': 1609.34,
+                'meters': 1,
+                'centimeters': 0.01,
+                'millimeters': 0.001,
+                'kilometers': 1000
+            }
+        },
+        'mass': {
+            'grams': {
+                'grams': 1,
+                'kilograms': 1000,
+                'milligrams': 0.001,
+                'pounds': 453.592,
+                'ounces': 28.3495,
+                'stones': 6350.29,
+                'tonnes': 1000000
+            }
+        },
+        'volume': {
+            'liters': {
+                'liters': 1,
+                'milliliters': 0.001,
+                'gallons': 3.78541,
+                'quarts': 0.946353,
+                'pints': 0.473176,
+                'cups': 0.236588,
+                'fluid ounces': 0.0295735,
+                'tablespoons': 0.0147868,
+                'teaspoons': 0.00492892
+            }
+        }
     }
     
-    if unit not in conversion_factors:
-        return None, None, None
-        
-    measurement_type, base_unit, conversion_func = conversion_factors[unit]
-    base_value = conversion_func(value)
+    for type_name, type_data in conversion_factors.items():
+        for base_unit, units in type_data.items():
+            if unit in units:
+                return type_name, base_unit, value * units[unit]
     
-    return measurement_type, base_unit, base_value
+    return None, None, None
 
-def convert_to_all_units(measurement_type, base_unit, base_value):
-    conversions = {}
+def convert_to_all_units(measurement_type, base_value):
+    conversion_factors = {
+        'length': {
+            'inches': 0.0254,
+            'feet': 0.3048,
+            'yards': 0.9144,
+            'miles': 1609.34,
+            'millimeters': 0.001,
+            'centimeters': 0.01,
+            'meters': 1,
+            'kilometers': 1000
+        },
+        'mass': {
+            'ounces': 28.3495,
+            'pounds': 453.592,
+            'stones': 6350.29,
+            'milligrams': 0.001,
+            'grams': 1,
+            'kilograms': 1000,
+            'tonnes': 1000000
+        },
+        'volume': {
+            'teaspoons': 0.00492892,
+            'tablespoons': 0.0147868,
+            'fluid ounces': 0.0295735,
+            'cups': 0.236588,
+            'pints': 0.473176,
+            'quarts': 0.946353,
+            'gallons': 3.78541,
+            'milliliters': 0.001,
+            'liters': 1
+        }
+    }
     
-    if measurement_type == 'length':
-        conversions['inches'] = base_value / 0.0254
-        conversions['feet'] = base_value / 0.3048
-        conversions['yards'] = base_value / 0.9144
-        conversions['miles'] = base_value / 1609.34
-        conversions['millimeters'] = base_value * 1000
-        conversions['centimeters'] = base_value * 100
-        conversions['meters'] = base_value
-        conversions['kilometers'] = base_value / 1000
-        
-    elif measurement_type == 'mass':
-        conversions['ounces'] = base_value / 28.3495
-        conversions['pounds'] = base_value / 453.592
-        conversions['stones'] = base_value / 6350.29
-        conversions['milligrams'] = base_value * 1000
-        conversions['grams'] = base_value
-        conversions['kilograms'] = base_value / 1000
-        conversions['tonnes'] = base_value / 1000000
-        
-    elif measurement_type == 'volume':
-        conversions['teaspoons'] = base_value / 0.00492892
-        conversions['tablespoons'] = base_value / 0.0147868
-        conversions['fluid ounces'] = base_value / 0.0295735
-        conversions['cups'] = base_value / 0.236588
-        conversions['pints'] = base_value / 0.473176
-        conversions['quarts'] = base_value / 0.946353
-        conversions['gallons'] = base_value / 3.78541
-        conversions['milliliters'] = base_value * 1000
-        conversions['liters'] = base_value
-        
-    return conversions
+    return {unit: base_value / factor for unit, factor in conversion_factors[measurement_type].items()}
 
 def format_results(conversions, measurement_type):
-    formatted_results = {}
-    
     unit_order = {
         'length': [
             ('inches', 'in'),
@@ -182,15 +181,10 @@ def format_results(conversions, measurement_type):
         ]
     }
     
-    count = 1
-    for unit, abbr in unit_order[measurement_type]:
+    formatted_results = {}
+    for idx, (unit, abbr) in enumerate(unit_order[measurement_type], 1):
         if unit in conversions:
             value = conversions[unit]
-            decimal = f"{value:.4f}"
-            
-            unit_key = f"unit{count}"
-            formatted_results[unit_key] = f"{decimal} {abbr}"
-            
-            count += 1
+            formatted_results[f"unit{idx}"] = f"{value:.4f} {abbr}"
     
     return formatted_results

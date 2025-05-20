@@ -43,8 +43,8 @@ def circlepolygon_solve(data):
             return jsonify({
                 'values': {
                     'a1shape': f"Shape: {shape}",
-                    'a2area': f"Area: {areaFrac:.3f}π²",
-                    'a3perimeter': f"Circumference: {perimeterFrac:.3f}π²",
+                    'a2area': f"Area: {areaFrac:.3f}π",
+                    'a3perimeter': f"Circumference: {perimeterFrac:.3f}π",
                     'a4radiusDiameterInterior': f"Diameter: {diameter:.3f}"
                 }
             })
@@ -62,8 +62,8 @@ def circlepolygon_solve(data):
             return jsonify({
                 'values': {
                     'a1shape': f"Shape: {shape}",
-                    'a2area': f"Area: {areaFrac:.3f}π²",
-                    'a3perimeter': f"Circumference: {perimeterFrac:.3f}π²",
+                    'a2area': f"Area: {areaFrac:.3f}π",
+                    'a3perimeter': f"Circumference: {perimeterFrac:.3f}π",
                     'a4radiusDiameterInterior': f"Radius: {radius:.3f}"
                 }
             })

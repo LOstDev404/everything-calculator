@@ -17,9 +17,14 @@
         "tags": "patterns pattern arithmetic sequence geometric sequence",
         "title": "Pattern Calculator:",
         "subtitle": "Fill all of the boxes",
-        "selectorinput": {
-            "add_sub": "Addition/Subtraction | Arithmetic",
-            "mult_div": "Multiplication/Division | Geometric"
+        "selectorinputs": {
+            "sequenceType": {
+                "label": "Sequence Type:",
+                "options": {
+                    "add_sub": "Addition/Subtraction | Arithmetic",
+                    "mult_div": "Multiplication/Division | Geometric"
+                }
+            }
         },
         "numberinput": {
             "firstTerm": "First number in the sequence:",
@@ -61,9 +66,14 @@
         "description": "Calculate download time based on speed and file size",
         "tags": "download speed calculator mbps mb/s time file size calculate download speed calculate download time",
         "title": "Download Time Calculator:",
-        "selectorinput": {
-            "mb/s": "MB/s",
-            "mbps": "Mbps"
+        "selectorinputs": {
+            "speedUnit": {
+                "label": "Speed Unit:",
+                "options": {
+                    "mb/s": "MB/s",
+                    "mbps": "Mbps"
+                }
+            }
         },
         "numberinput": {
             "downloadSpeed": "Download Speed:"
