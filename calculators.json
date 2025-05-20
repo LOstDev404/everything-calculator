@@ -69,7 +69,17 @@
             "downloadSpeed": "Download Speed:"
         }, 
         "textinput": {
-            "fileSize": "File Size (end with unit type} Ex: 5.4gb:"
+            "fileSize": "File Size with unit type ('5.4gb', '147mb', '1.5tb')"
+        }
+    },
+    {
+        "id": "unitconverter",
+        "name": "Unit Converter",
+        "description": "Convert between different units of length, mass, and volume",
+        "tags": "unit converter measurement convert imperial metric feet meters pounds kilograms gallons liters",
+        "title": "Unit Converter:",
+        "textinput": {
+            "inputValue": "Enter a value with its unit ('15 feet', '2.5 kg', '3 gallons'):"
         }
     }
 ]
