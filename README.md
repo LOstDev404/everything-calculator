@@ -48,10 +48,15 @@ If you find a bug or have a feature request, please feel free to open an issue i
        "tags": "calculator example calculator ex readme",
        "title": "Example Calculator:",
        "subtitle": "Fill all of the boxes and select an option",
-       "selectorinput": {
-           "option1": "Example option 1",
-           "option2": "Example option 2"
-       },
+       "selectorinputs": {
+            "exampleOptions": {
+                "label": "Select an option:",
+                "options": {
+                    "optionOne": "Option One",
+                    "optionOne": "Option Two"
+                }
+            }
+        },
        "numberinput": {
            "numberInput1": "Example number input 1:",
            "numberInput2": "Example number input 2:",
@@ -64,6 +69,8 @@ If you find a bug or have a feature request, please feel free to open an issue i
         }
    },
    ```
+   `Note: Subtitles aren't required`
+   
 4. Create the code for the calculation in your Python file
 5. Have results returned by creating the `result` using `jsonify`, and make sure to return it properly:
 
