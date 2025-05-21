@@ -441,3 +441,41 @@ footer {
     width: 16px;
     height: 16px;
 }
+
+.results-search-container {
+    margin-bottom: 1em;
+    position: relative;
+}
+
+.results-search-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background-color: var(--background-dark);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.results-search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.results-search-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.8;
+}
+
+.results-container {
+    transition: opacity 0.2s ease;
+}
+
+.no-results-message {
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 0.5rem;
+    text-align: center;
+}

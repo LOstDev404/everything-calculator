@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
   console.log('calculator.js loaded');
-
   document.addEventListener('calculatorLoaded', initializeCalculatorForm);
 
   setupButtonEventDelegation();
@@ -64,7 +63,6 @@ async function handleFormSubmit(e) {
 
       calculatedValues.innerHTML = '';
 
-
       if (data.plot) {
         const visualizationSection = document.createElement('div');
         visualizationSection.id = 'visualization-section';
@@ -83,13 +81,59 @@ async function handleFormSubmit(e) {
 
       if (data.values) {
         const entries = Object.entries(data.values);
-        const decimalEntries  = entries.filter(([key]) => !key.toLowerCase().includes('frac'));
-        const fractionEntries = entries.filter(([key]) =>  key.toLowerCase().includes('frac'));
+        const decimalEntries = entries.filter(([key]) => !key.toLowerCase().includes('frac'));
+        const fractionEntries = entries.filter(([key]) => key.toLowerCase().includes('frac'));
+        const totalResults = entries.length;
+        const RESULTS_THRESHOLD = 13;
+        
+        if (totalResults > RESULTS_THRESHOLD) {
+          const searchContainer = document.createElement('div');
+          searchContainer.className = 'results-search-container';
+          searchContainer.style.marginBottom = '1em';
+          
+          const searchInput = document.createElement('input');
+          searchInput.type = 'text';
+          searchInput.className = 'search-input';
+          searchInput.placeholder = 'Search results...';
+          
+          
+          searchContainer.appendChild(searchInput);
+          calculatedValues.appendChild(searchContainer);
+          searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const resultRows = document.querySelectorAll('.results-container');
+            
+            resultRows.forEach(row => {
+              const textElement = row.querySelector('p');
+              const keyId = textElement.id.replace('-text', '');
+              const textContent = textElement.textContent.toLowerCase();
+              
+              if (keyId.toLowerCase().includes(searchTerm) || textContent.includes(searchTerm)) {
+                row.style.display = 'flex';
+              } else {
+                row.style.display = 'none';
+              }
+            });
+            
+            document.querySelectorAll('.category-container').forEach(category => {
+              const categoryResults = category.querySelectorAll('.results-container');
+              const visibleResults = Array.from(categoryResults).filter(row => row.style.display !== 'none');
+              
+              if (visibleResults.length === 0) {
+                category.querySelector('h3').style.display = 'none';
+              } else {
+                category.querySelector('h3').style.display = 'block';
+              }
+            });
+          });
+        }
 
         function makeResultRow(key, val) {
           const container = document.createElement('div');
           container.className = 'results-container';
           container.style.marginBottom = '0.5em';
+          container.dataset.key = key;
+          container.dataset.value = val;
 
           const p = document.createElement('p');
           p.id = `${key}-text`;
@@ -125,7 +169,7 @@ async function handleFormSubmit(e) {
             return div;
           };
 
-          const decimalsTitle  = decimalEntries.length  === 1 ? 'Decimal:'  : 'Decimals:';
+          const decimalsTitle = decimalEntries.length === 1 ? 'Decimal:' : 'Decimals:';
           const fractionsTitle = fractionEntries.length === 1 ? 'Fraction:' : 'Fractions:';
 
           calculatedValues.appendChild(
@@ -138,8 +182,6 @@ async function handleFormSubmit(e) {
 
         if (window.feather) feather.replace();
       }
-
-
     }
   } catch (error) {
     errorMessage.style.display = 'block';
