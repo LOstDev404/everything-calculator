@@ -84,6 +84,6 @@ If you find a bug or have a feature request, please feel free to open an issue i
     ```
 6. Sumbit a pull request with your calculator and wait for it to be Approved and Merged.
 
-#Notes
+# Notes
 - Calculator Subtitles are not required or recommended. 
 - You need to include 'Frac' in your output variables name for it to be put in the fractions section. Otherwise it will be automatically placed in the decimals section. 
