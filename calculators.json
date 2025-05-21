@@ -16,7 +16,6 @@
         "description": "Calculate the nth number in a pattern",
         "tags": "patterns pattern arithmetic sequence geometric sequence",
         "title": "Pattern Calculator:",
-        "subtitle": "Fill all of the boxes",
         "selectorinput": {
             "sequenceType": {
                 "label": "Sequence Type:",
