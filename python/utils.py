@@ -1,6 +1,5 @@
 from flask import jsonify
 from fractions import Fraction
-#Fraction percent convert
 
 def float_to_fraction_percent(value, suffix="", usepercent=False, purefrac=False, accuracy=1e-8):
     is_fraction_input = isinstance(value, Fraction) or (isinstance(value, str) and '/' in value)
@@ -44,8 +43,6 @@ def float_to_fraction_percent(value, suffix="", usepercent=False, purefrac=False
         else:
             return primary_result
 
-
-#Shape names
 def shape_name(sides):
     sides = int(sides)
     shapes = {
@@ -149,7 +146,6 @@ def shape_name(sides):
       "100": "Hectogon"
     }
 
-
     if sides < 3:
         return "Invalid Shape"
     elif sides <= 100:
@@ -157,3 +153,93 @@ def shape_name(sides):
         return shape if shape else "Unknown Shape"
     else:
         return f'{sides}-gon'
+
+def get_unit_mappings():
+    return {
+        'ft': 'feet', 'foot': 'feet', 'feet': 'feet', "'": 'feet',
+        'in': 'inches', 'inch': 'inches', 'inches': 'inches', '"': 'inches',
+        'yd': 'yards', 'yard': 'yards', 'yards': 'yards',
+        'mi': 'miles', 'mile': 'miles', 'miles': 'miles',
+        'm': 'meters', 'meter': 'meters', 'meters': 'meters', 'metre': 'meters', 'metres': 'meters',
+        'cm': 'centimeters', 'centimeter': 'centimeters', 'centimeters': 'centimeters',
+        'mm': 'millimeters', 'millimeter': 'millimeters', 'millimeters': 'millimeters',
+        'km': 'kilometers', 'kilometer': 'kilometers', 'kilometers': 'kilometers',
+        'dm': 'decimeters', 'decimeter': 'decimeters', 'decimeters': 'decimeters',
+        'dam': 'dekameters', 'dekameter': 'dekameters', 'dekameters': 'dekameters',
+        'hm': 'hectometers', 'hectometer': 'hectometers', 'hectometers': 'hectometers',
+        'μm': 'micrometers', 'micrometer': 'micrometers', 'micrometers': 'micrometers', 'micron': 'micrometers',
+        'nm': 'nanometers', 'nanometer': 'nanometers', 'nanometers': 'nanometers',
+        'pm': 'picometers', 'picometer': 'picometers', 'picometers': 'picometers',
+        'au': 'astronomical units', 'astronomical unit': 'astronomical units',
+        'ly': 'light years', 'light year': 'light years', 'light-year': 'light years',
+
+        'g': 'grams', 'gram': 'grams', 'grams': 'grams',
+        'kg': 'kilograms', 'kilogram': 'kilograms', 'kilograms': 'kilograms',
+        'mg': 'milligrams', 'milligram': 'milligrams', 'milligrams': 'milligrams',
+        'μg': 'micrograms', 'microgram': 'micrograms', 'micrograms': 'micrograms',
+        'ng': 'nanograms', 'nanogram': 'nanograms', 'nanograms': 'nanograms',
+        'pg': 'picograms', 'picogram': 'picograms', 'picograms': 'picograms',
+        'dg': 'decigrams', 'decigram': 'decigrams', 'decigrams': 'decigrams',
+        'dag': 'dekagrams', 'dekagram': 'dekagrams', 'dekagrams': 'dekagrams',
+        'hg': 'hectograms', 'hectogram': 'hectograms', 'hectograms': 'hectograms',
+        'lb': 'pounds', 'lbs': 'pounds', 'pound': 'pounds', 'pounds': 'pounds',
+        'oz': 'ounces', 'ounce': 'ounces', 'ounces': 'ounces',
+        'st': 'stones', 'stone': 'stones', 'stones': 'stones',
+        't': 'tonnes', 'ton': 'tonnes', 'metric ton': 'tonnes', 'tonnes': 'tonnes',
+        'ct': 'carats', 'carat': 'carats', 'carats': 'carats',
+        'gr': 'grains', 'grain': 'grains', 'grains': 'grains',
+        'dwt': 'pennyweights', 'pennyweight': 'pennyweights', 'pennyweights': 'pennyweights',
+
+        'l': 'liters', 'liter': 'liters', 'liters': 'liters', 'litre': 'liters', 'litres': 'liters',
+        'ml': 'milliliters', 'milliliter': 'milliliters', 'milliliters': 'milliliters',
+        'cl': 'centiliters', 'centiliter': 'centiliters', 'centiliters': 'centiliters',
+        'dl': 'deciliters', 'deciliter': 'deciliters', 'deciliters': 'deciliters',
+        'dal': 'dekaliters', 'dekaliter': 'dekaliters', 'dekaliters': 'dekaliters',
+        'hl': 'hectoliters', 'hectoliter': 'hectoliters', 'hectoliters': 'hectoliters',
+        'kl': 'kiloliters', 'kiloliter': 'kiloliters', 'kiloliters': 'kiloliters',
+        'μl': 'microliters', 'microliter': 'microliters', 'microliters': 'microliters',
+        'nl': 'nanoliters', 'nanoliter': 'nanoliters', 'nanoliters': 'nanoliters',
+        'pl': 'picoliters', 'picoliter': 'picoliters', 'picoliters': 'picoliters',
+        'gal': 'gallons', 'gallon': 'gallons', 'gallons': 'gallons',
+        'qt': 'quarts', 'quart': 'quarts', 'quarts': 'quarts',
+        'pt': 'pints', 'pint': 'pints', 'pints': 'pints',
+        'c': 'cups', 'cup': 'cups', 'cups': 'cups',
+        'floz': 'fluid ounces', 'fl oz': 'fluid ounces', 'fluid ounce': 'fluid ounces', 'fluid ounces': 'fluid ounces',
+        'tbsp': 'tablespoons', 'tablespoon': 'tablespoons', 'tablespoons': 'tablespoons',
+        'tsp': 'teaspoons', 'teaspoon': 'teaspoons', 'teaspoons': 'teaspoons',
+        'bbl': 'barrels', 'barrel': 'barrels', 'barrels': 'barrels',
+
+        'ft³': 'cubic feet', 'cu ft': 'cubic feet', 'cubic feet': 'cubic feet', 'ft3': 'cubic feet', 'cubic ft': 'cubic feet',
+        'in³': 'cubic inches', 'cu in': 'cubic inches', 'cubic inches': 'cubic inches', 'in3': 'cubic inches', 'cubic in': 'cubic inches',
+        'yd³': 'cubic yards', 'cu yd': 'cubic yards', 'cubic yards': 'cubic yards', 'yd3': 'cubic yards', 'cubic yd': 'cubic yards',
+        'm³': 'cubic meters', 'cu m': 'cubic meters', 'cubic meters': 'cubic meters', 'm3': 'cubic meters', 'cubic m': 'cubic meters',
+        'cm³': 'cubic centimeters', 'cu cm': 'cubic centimeters', 'cubic centimeters': 'cubic centimeters', 'cm3': 'cubic centimeters', 'cc': 'cubic centimeters', 'cubic cm': 'cubic centimeters',
+        'mm³': 'cubic millimeters', 'cu mm': 'cubic millimeters', 'cubic millimeters': 'cubic millimeters', 'mm3': 'cubic millimeters', 'cubic mm': 'cubic millimeters',
+        'km³': 'cubic kilometers', 'cu km': 'cubic kilometers', 'cubic kilometers': 'cubic kilometers', 'km3': 'cubic kilometers', 'cubic km': 'cubic kilometers',
+        'dm³': 'cubic decimeters', 'cu dm': 'cubic decimeters', 'cubic decimeters': 'cubic decimeters', 'dm3': 'cubic decimeters', 'cubic dm': 'cubic decimeters',
+        'dam³': 'cubic dekameters', 'cu dam': 'cubic dekameters', 'cubic dekameters': 'cubic dekameters', 'dam3': 'cubic dekameters', 'cubic dam': 'cubic dekameters',
+        'hm³': 'cubic hectometers', 'cu hm': 'cubic hectometers', 'cubic hectometers': 'cubic hectometers', 'hm3': 'cubic hectometers', 'cubic hm': 'cubic hectometers',
+
+        'b': 'bits', 'bit': 'bits', 'bits': 'bits',
+        'kb': 'kilobits', 'kilobit': 'kilobits', 'kilobits': 'kilobits',
+        'mb': 'megabits', 'megabit': 'megabits', 'megabits': 'megabits',
+        'gb': 'gigabits', 'gigabit': 'gigabits', 'gigabits': 'gigabits',
+        'tb': 'terabits', 'terabit': 'terabits', 'terabits': 'terabits',
+        'pb': 'petabits', 'petabit': 'petabits', 'petabits': 'petabits',
+        'byte': 'bytes', 'bytes': 'bytes',
+        'kib': 'kibibytes', 'kibibyte': 'kibibytes', 'kibibytes': 'kibibytes',
+        'mib': 'mebibytes', 'mebibyte': 'mebibytes', 'mebibytes': 'mebibytes',
+        'gib': 'gibibytes', 'gibibyte': 'gibibytes', 'gibibytes': 'gibibytes',
+        'tib': 'tebibytes', 'tebibyte': 'tebibytes', 'tebibytes': 'tebibytes',
+        'pib': 'pebibytes', 'pebibyte': 'pebibytes', 'pebibytes': 'pebibytes',
+        'kb_decimal': 'kilobytes decimal', 'kilobyte': 'kilobytes decimal', 'kilobytes': 'kilobytes decimal',
+        'mb_decimal': 'megabytes decimal', 'megabyte': 'megabytes decimal', 'megabytes': 'megabytes decimal',
+        'gb_decimal': 'gigabytes decimal', 'gigabyte': 'gigabytes decimal', 'gigabytes': 'gigabytes decimal',
+        'tb_decimal': 'terabytes decimal', 'terabyte': 'terabytes decimal', 'terabytes': 'terabytes decimal',
+        'pb_decimal': 'petabytes decimal', 'petabyte': 'petabytes decimal', 'petabytes': 'petabytes decimal',
+
+        '°c': 'celsius', 'celsius': 'celsius', 'c': 'celsius',
+        '°f': 'fahrenheit', 'fahrenheit': 'fahrenheit', 'f': 'fahrenheit',
+        '°k': 'kelvin', 'kelvin': 'kelvin', 'k': 'kelvin',
+        '°r': 'rankine', 'rankine': 'rankine', 'r': 'rankine'
+    }
