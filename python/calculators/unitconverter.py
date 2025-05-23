@@ -1,5 +1,6 @@
 import re
 from flask import jsonify
+from python.utils import get_unit_mappings
 
 def unitconverter_solve(data):
     try:
@@ -33,7 +34,7 @@ def unitconverter_solve(data):
         return jsonify({'error': str(e)})
 
 def parse_input(input_text):
-    pattern = r'([-+]?\d*\.?\d+)\s*([a-zA-Z]+\.?|[a-zA-Z]+\s*[a-zA-Z]+|°[a-zA-Z])'
+    pattern = r'([-+]?\d*\.?\d+)\s*([a-zA-Z]+\.?|[a-zA-Z]+\s*[a-zA-Z]+|°[a-zA-Z]|[a-zA-Z]+\s+[a-zA-Z]+)'
     match = re.match(pattern, input_text)
 
     if not match:
@@ -42,95 +43,15 @@ def parse_input(input_text):
     value = float(match.group(1))
     unit = match.group(2).lower().strip()
 
-    unit_mapping = {
-        'ft': 'feet', 'foot': 'feet', 'feet': 'feet', "'": 'feet',
-        'in': 'inches', 'inch': 'inches', 'inches': 'inches', '"': 'inches',
-        'yd': 'yards', 'yard': 'yards', 'yards': 'yards',
-        'mi': 'miles', 'mile': 'miles', 'miles': 'miles',
-        'm': 'meters', 'meter': 'meters', 'meters': 'meters', 'metre': 'meters', 'metres': 'meters',
-        'cm': 'centimeters', 'centimeter': 'centimeters', 'centimeters': 'centimeters',
-        'mm': 'millimeters', 'millimeter': 'millimeters', 'millimeters': 'millimeters',
-        'km': 'kilometers', 'kilometer': 'kilometers', 'kilometers': 'kilometers',
-        'dm': 'decimeters', 'decimeter': 'decimeters', 'decimeters': 'decimeters',
-        'dam': 'dekameters', 'dekameter': 'dekameters', 'dekameters': 'dekameters',
-        'hm': 'hectometers', 'hectometer': 'hectometers', 'hectometers': 'hectometers',
-        'μm': 'micrometers', 'micrometer': 'micrometers', 'micrometers': 'micrometers', 'micron': 'micrometers',
-        'nm': 'nanometers', 'nanometer': 'nanometers', 'nanometers': 'nanometers',
-        'pm': 'picometers', 'picometer': 'picometers', 'picometers': 'picometers',
-        'au': 'astronomical units', 'astronomical unit': 'astronomical units',
-        'ly': 'light years', 'light year': 'light years', 'light-year': 'light years',
-
-        'g': 'grams', 'gram': 'grams', 'grams': 'grams',
-        'kg': 'kilograms', 'kilogram': 'kilograms', 'kilograms': 'kilograms',
-        'mg': 'milligrams', 'milligram': 'milligrams', 'milligrams': 'milligrams',
-        'μg': 'micrograms', 'microgram': 'micrograms', 'micrograms': 'micrograms',
-        'ng': 'nanograms', 'nanogram': 'nanograms', 'nanograms': 'nanograms',
-        'pg': 'picograms', 'picogram': 'picograms', 'picograms': 'picograms',
-        'dg': 'decigrams', 'decigram': 'decigrams', 'decigrams': 'decigrams',
-        'dag': 'dekagrams', 'dekagram': 'dekagrams', 'dekagrams': 'dekagrams',
-        'hg': 'hectograms', 'hectogram': 'hectograms', 'hectograms': 'hectograms',
-        'lb': 'pounds', 'lbs': 'pounds', 'pound': 'pounds', 'pounds': 'pounds',
-        'oz': 'ounces', 'ounce': 'ounces', 'ounces': 'ounces',
-        'st': 'stones', 'stone': 'stones', 'stones': 'stones',
-        't': 'tonnes', 'ton': 'tonnes', 'metric ton': 'tonnes', 'tonnes': 'tonnes',
-        'ct': 'carats', 'carat': 'carats', 'carats': 'carats',
-        'gr': 'grains', 'grain': 'grains', 'grains': 'grains',
-        'dwt': 'pennyweights', 'pennyweight': 'pennyweights', 'pennyweights': 'pennyweights',
-
-        'l': 'liters', 'liter': 'liters', 'liters': 'liters', 'litre': 'liters', 'litres': 'liters',
-        'ml': 'milliliters', 'milliliter': 'milliliters', 'milliliters': 'milliliters',
-        'cl': 'centiliters', 'centiliter': 'centiliters', 'centiliters': 'centiliters',
-        'dl': 'deciliters', 'deciliter': 'deciliters', 'deciliters': 'deciliters',
-        'dal': 'dekaliters', 'dekaliter': 'dekaliters', 'dekaliters': 'dekaliters',
-        'hl': 'hectoliters', 'hectoliter': 'hectoliters', 'hectoliters': 'hectoliters',
-        'kl': 'kiloliters', 'kiloliter': 'kiloliters', 'kiloliters': 'kiloliters',
-        'μl': 'microliters', 'microliter': 'microliters', 'microliters': 'microliters',
-        'nl': 'nanoliters', 'nanoliter': 'nanoliters', 'nanoliters': 'nanoliters',
-        'pl': 'picoliters', 'picoliter': 'picoliters', 'picoliters': 'picoliters',
-        'gal': 'gallons', 'gallon': 'gallons', 'gallons': 'gallons',
-        'qt': 'quarts', 'quart': 'quarts', 'quarts': 'quarts',
-        'pt': 'pints', 'pint': 'pints', 'pints': 'pints',
-        'c': 'cups', 'cup': 'cups', 'cups': 'cups',
-        'floz': 'fluid ounces', 'fl oz': 'fluid ounces', 'fluid ounce': 'fluid ounces', 'fluid ounces': 'fluid ounces',
-        'tbsp': 'tablespoons', 'tablespoon': 'tablespoons', 'tablespoons': 'tablespoons',
-        'tsp': 'teaspoons', 'teaspoon': 'teaspoons', 'teaspoons': 'teaspoons',
-        'bbl': 'barrels', 'barrel': 'barrels', 'barrels': 'barrels',
-
-        'ft³': 'cubic feet', 'cu ft': 'cubic feet', 'cubic feet': 'cubic feet', 'ft3': 'cubic feet',
-        'in³': 'cubic inches', 'cu in': 'cubic inches', 'cubic inches': 'cubic inches', 'in3': 'cubic inches',
-        'yd³': 'cubic yards', 'cu yd': 'cubic yards', 'cubic yards': 'cubic yards', 'yd3': 'cubic yards',
-        'm³': 'cubic meters', 'cu m': 'cubic meters', 'cubic meters': 'cubic meters', 'm3': 'cubic meters',
-        'cm³': 'cubic centimeters', 'cu cm': 'cubic centimeters', 'cubic centimeters': 'cubic centimeters', 'cm3': 'cubic centimeters', 'cc': 'cubic centimeters',
-        'mm³': 'cubic millimeters', 'cu mm': 'cubic millimeters', 'cubic millimeters': 'cubic millimeters', 'mm3': 'cubic millimeters',
-        'km³': 'cubic kilometers', 'cu km': 'cubic kilometers', 'cubic kilometers': 'cubic kilometers', 'km3': 'cubic kilometers',
-        'dm³': 'cubic decimeters', 'cu dm': 'cubic decimeters', 'cubic decimeters': 'cubic decimeters', 'dm3': 'cubic decimeters',
-        'dam³': 'cubic dekameters', 'cu dam': 'cubic dekameters', 'cubic dekameters': 'cubic dekameters', 'dam3': 'cubic dekameters',
-        'hm³': 'cubic hectometers', 'cu hm': 'cubic hectometers', 'cubic hectometers': 'cubic hectometers', 'hm3': 'cubic hectometers',
-
-        'b': 'bits', 'bit': 'bits', 'bits': 'bits',
-        'kb': 'kilobits', 'kilobit': 'kilobits', 'kilobits': 'kilobits',
-        'mb': 'megabits', 'megabit': 'megabits', 'megabits': 'megabits',
-        'gb': 'gigabits', 'gigabit': 'gigabits', 'gigabits': 'gigabits',
-        'tb': 'terabits', 'terabit': 'terabits', 'terabits': 'terabits',
-        'pb': 'petabits', 'petabit': 'petabits', 'petabits': 'petabits',
-        'byte': 'bytes', 'bytes': 'bytes',
-        'kib': 'kibibytes', 'kibibyte': 'kibibytes', 'kibibytes': 'kibibytes',
-        'mib': 'mebibytes', 'mebibyte': 'mebibytes', 'mebibytes': 'mebibytes',
-        'gib': 'gibibytes', 'gibibyte': 'gibibytes', 'gibibytes': 'gibibytes',
-        'tib': 'tebibytes', 'tebibyte': 'tebibytes', 'tebibytes': 'tebibytes',
-        'pib': 'pebibytes', 'pebibyte': 'pebibytes', 'pebibytes': 'pebibytes',
-        'kb_decimal': 'kilobytes decimal', 'kilobyte': 'kilobytes decimal', 'kilobytes': 'kilobytes decimal',
-        'mb_decimal': 'megabytes decimal', 'megabyte': 'megabytes decimal', 'megabytes': 'megabytes decimal',
-        'gb_decimal': 'gigabytes decimal', 'gigabyte': 'gigabytes decimal', 'gigabytes': 'gigabytes decimal',
-        'tb_decimal': 'terabytes decimal', 'terabyte': 'terabytes decimal', 'terabytes': 'terabytes decimal',
-        'pb_decimal': 'petabytes decimal', 'petabyte': 'petabytes decimal', 'petabytes': 'petabytes decimal',
-
-        '°c': 'celsius', 'celsius': 'celsius', 'c': 'celsius',
-        '°f': 'fahrenheit', 'fahrenheit': 'fahrenheit', 'f': 'fahrenheit',
-        '°k': 'kelvin', 'kelvin': 'kelvin', 'k': 'kelvin',
-        '°r': 'rankine', 'rankine': 'rankine', 'r': 'rankine'
-    }
-
+    unit_mapping = get_unit_mappings()
+    
+    if 'cubed' in unit:
+        unit = unit.replace('cubed', '').strip()
+        if unit in unit_mapping:
+            base_unit = unit_mapping[unit]
+            if base_unit in ['feet', 'inches', 'yards', 'meters', 'centimeters', 'millimeters', 'kilometers', 'decimeters', 'dekameters', 'hectometers']:
+                unit = f'cubic {base_unit}'
+    
     return value, unit_mapping.get(unit, unit)
 
 def identify_measurement_type(value, unit):
@@ -160,29 +81,20 @@ def identify_measurement_type(value, unit):
                 'microliters': 0.000001, 'nanoliters': 0.000000001, 'picoliters': 0.000000000001,
                 'gallons': 3.78541, 'quarts': 0.946353, 'pints': 0.473176, 'cups': 0.236588,
                 'fluid ounces': 0.0295735, 'tablespoons': 0.0147868, 'teaspoons': 0.00492892,
-                'barrels': 119.24
+                'barrels': 119.24, 'cubic feet': 28.3168, 'cubic inches': 0.0163871, 'cubic yards': 764.555,
+                'cubic meters': 1000, 'cubic centimeters': 0.001, 'cubic millimeters': 0.000001,
+                'cubic kilometers': 1000000000000, 'cubic decimeters': 1, 'cubic dekameters': 1000000,
+                'cubic hectometers': 1000000000
             }
         },
-        'cubic_volume': {
-            'cubic_meters': {
-                'cubic feet': 0.0283168, 'cubic inches': 0.0000163871, 'cubic yards': 0.764555,
-                'cubic meters': 1, 'cubic centimeters': 0.000001, 'cubic millimeters': 0.000000001,
-                'cubic kilometers': 1000000000, 'cubic decimeters': 0.001, 'cubic dekameters': 1000,
-                'cubic hectometers': 1000000
-            }
-        },
-        'data_bits': {
+        'data': {
             'bits': {
                 'bits': 1, 'kilobits': 1000, 'megabits': 1000000, 'gigabits': 1000000000,
-                'terabits': 1000000000000, 'petabits': 1000000000000000
-            }
-        },
-        'data_bytes': {
-            'bytes': {
-                'bytes': 1, 'kibibytes': 1024, 'mebibytes': 1048576, 'gibibytes': 1073741824,
-                'tebibytes': 1099511627776, 'pebibytes': 1125899906842624,
-                'kilobytes decimal': 1000, 'megabytes decimal': 1000000, 'gigabytes decimal': 1000000000,
-                'terabytes decimal': 1000000000000, 'petabytes decimal': 1000000000000000
+                'terabits': 1000000000000, 'petabits': 1000000000000000,
+                'bytes': 8, 'kibibytes': 8192, 'mebibytes': 8388608, 'gibibytes': 8589934592,
+                'tebibytes': 8796093022208, 'pebibytes': 9007199254740992,
+                'kilobytes decimal': 8000, 'megabytes decimal': 8000000, 'gigabytes decimal': 8000000000,
+                'terabytes decimal': 8000000000000, 'petabytes decimal': 8000000000000000
             }
         },
         'temperature': {
@@ -244,23 +156,19 @@ def convert_to_all_units(measurement_type, base_value):
             'cups': 0.236588, 'pints': 0.473176, 'quarts': 0.946353, 'gallons': 3.78541,
             'picoliters': 0.000000000001, 'nanoliters': 0.000000001, 'microliters': 0.000001,
             'milliliters': 0.001, 'centiliters': 0.01, 'deciliters': 0.1, 'liters': 1,
-            'dekaliters': 10, 'hectoliters': 100, 'kiloliters': 1000, 'barrels': 119.24
+            'dekaliters': 10, 'hectoliters': 100, 'kiloliters': 1000, 'barrels': 119.24,
+            'cubic inches': 0.0163871, 'cubic feet': 28.3168, 'cubic yards': 764.555,
+            'cubic millimeters': 0.000001, 'cubic centimeters': 0.001, 'cubic decimeters': 1,
+            'cubic meters': 1000, 'cubic dekameters': 1000000, 'cubic hectometers': 1000000000,
+            'cubic kilometers': 1000000000000
         },
-        'cubic_volume': {
-            'cubic inches': 0.0000163871, 'cubic feet': 0.0283168, 'cubic yards': 0.764555,
-            'cubic millimeters': 0.000000001, 'cubic centimeters': 0.000001, 'cubic decimeters': 0.001,
-            'cubic meters': 1, 'cubic dekameters': 1000, 'cubic hectometers': 1000000,
-            'cubic kilometers': 1000000000
-        },
-        'data_bits': {
+        'data': {
             'bits': 1, 'kilobits': 1000, 'megabits': 1000000, 'gigabits': 1000000000,
-            'terabits': 1000000000000, 'petabits': 1000000000000000
-        },
-        'data_bytes': {
-            'bytes': 1, 'kibibytes': 1024, 'mebibytes': 1048576, 'gibibytes': 1073741824,
-            'tebibytes': 1099511627776, 'pebibytes': 1125899906842624,
-            'kilobytes decimal': 1000, 'megabytes decimal': 1000000, 'gigabytes decimal': 1000000000,
-            'terabytes decimal': 1000000000000, 'petabytes decimal': 1000000000000000
+            'terabits': 1000000000000, 'petabits': 1000000000000000,
+            'bytes': 8, 'kibibytes': 8192, 'mebibytes': 8388608, 'gibibytes': 8589934592,
+            'tebibytes': 8796093022208, 'pebibytes': 9007199254740992,
+            'kilobytes decimal': 8000, 'megabytes decimal': 8000000, 'gigabytes decimal': 8000000000,
+            'terabytes decimal': 8000000000000, 'petabytes decimal': 8000000000000000
         },
         'temperature': {
             'celsius': 1, 'fahrenheit': 1, 'kelvin': 1, 'rankine': 1
@@ -271,6 +179,17 @@ def convert_to_all_units(measurement_type, base_value):
         return {unit: convert_celsius_to_unit(base_value, unit) for unit in conversion_factors[measurement_type]}
     else:
         return {unit: base_value / factor for unit, factor in conversion_factors[measurement_type].items()}
+
+def get_unit_aliases():
+    unit_mappings = get_unit_mappings()
+    aliases = {}
+    
+    for aliases_list, canonical in unit_mappings.items():
+        if canonical not in aliases:
+            aliases[canonical] = []
+        aliases[canonical].append(aliases_list)
+    
+    return aliases
 
 def format_results(conversions, measurement_type, target_unit=None):
     unit_order = {
@@ -294,25 +213,20 @@ def format_results(conversions, measurement_type, target_unit=None):
             ('picoliters', 'pL'), ('nanoliters', 'nL'), ('microliters', 'μL'),
             ('milliliters', 'mL'), ('centiliters', 'cL'), ('deciliters', 'dL'),
             ('liters', 'L'), ('dekaliters', 'daL'), ('hectoliters', 'hL'),
-            ('kiloliters', 'kL'), ('barrels', 'bbl')
+            ('kiloliters', 'kL'), ('barrels', 'bbl'), ('cubic inches', 'in³'),
+            ('cubic feet', 'ft³'), ('cubic yards', 'yd³'), ('cubic millimeters', 'mm³'),
+            ('cubic centimeters', 'cm³'), ('cubic decimeters', 'dm³'),
+            ('cubic meters', 'm³'), ('cubic dekameters', 'dam³'),
+            ('cubic hectometers', 'hm³'), ('cubic kilometers', 'km³')
         ],
-        'cubic_volume': [
-            ('cubic inches', 'in³'), ('cubic feet', 'ft³'), ('cubic yards', 'yd³'),
-            ('cubic millimeters', 'mm³'), ('cubic centimeters', 'cm³'),
-            ('cubic decimeters', 'dm³'), ('cubic meters', 'm³'),
-            ('cubic dekameters', 'dam³'), ('cubic hectometers', 'hm³'),
-            ('cubic kilometers', 'km³')
-        ],
-        'data_bits': [
-            ('bits', 'b (Bits)'), ('kilobits', 'Kb (Bits)'), ('megabits', 'Mb (Bits)'),
-            ('gigabits', 'Gb (Bits)'), ('terabits', 'Tb (Bits)'), ('petabits', 'Pb (Bits)')
-        ],
-        'data_bytes': [
-            ('bytes', 'B (Bytes)'), ('kibibytes', 'KiB (Bytes)'), ('mebibytes', 'MiB (Bytes)'),
-            ('gibibytes', 'GiB (Bytes)'), ('tebibytes', 'TiB (Bytes)'), ('pebibytes', 'PiB (Bytes)'),
-            ('kilobytes decimal', 'KB (Bytes)'), ('megabytes decimal', 'MB (Bytes)'),
-            ('gigabytes decimal', 'GB (Bytes)'), ('terabytes decimal', 'TB (Bytes)'),
-            ('petabytes decimal', 'PB (Bytes)')
+        'data': [
+            ('bits', 'b'), ('kilobits', 'Kb'), ('megabits', 'Mb'),
+            ('gigabits', 'Gb'), ('terabits', 'Tb'), ('petabits', 'Pb'),
+            ('bytes', 'B'), ('kibibytes', 'KiB'), ('mebibytes', 'MiB'),
+            ('gibibytes', 'GiB'), ('tebibytes', 'TiB'), ('pebibytes', 'PiB'),
+            ('kilobytes decimal', 'KB'), ('megabytes decimal', 'MB'),
+            ('gigabytes decimal', 'GB'), ('terabytes decimal', 'TB'),
+            ('petabytes decimal', 'PB')
         ],
         'temperature': [
             ('celsius', '°C'), ('fahrenheit', '°F'), ('kelvin', 'K'), ('rankine', '°R')
@@ -321,27 +235,32 @@ def format_results(conversions, measurement_type, target_unit=None):
 
     formatted_results = {}
     target_found = False
-    target_key = None
+    aliases = get_unit_aliases()
 
     for idx, (unit, abbr) in enumerate(unit_order[measurement_type], 1):
         if unit in conversions:
             value = conversions[unit]
-            key = f"unit{idx}"
-
-            if target_unit and unit == target_unit:
+            
+            unit_alias_list = aliases.get(unit, [unit])
+            unit_alias_string = ' '.join(unit_alias_list)
+            
+            if target_unit and (unit == target_unit or target_unit in unit_alias_list):
                 target_found = True
-                target_key = f"A1unit{idx}"
-                formatted_results[target_key] = f"{value:.4f} {abbr}"
+                key = f"A1{unit_alias_string}"
+                formatted_results[key] = f"{value:.4f} {abbr}"
             else:
+                key = unit_alias_string
                 formatted_results[key] = f"{value:.4f} {abbr}"
 
     if target_unit and not target_found:
         for unit, abbr in unit_order[measurement_type]:
-            if target_unit.lower() in unit.lower() or target_unit.lower() == abbr.lower():
+            unit_alias_list = aliases.get(unit, [unit])
+            if target_unit.lower() in [alias.lower() for alias in unit_alias_list] or target_unit.lower() == abbr.lower():
                 if unit in conversions:
                     value = conversions[unit]
-                    target_key = "A1unit1"
-                    formatted_results[target_key] = f"{value:.4f} {abbr}"
+                    unit_alias_string = ' '.join(unit_alias_list)
+                    key = f"A1{unit_alias_string}"
+                    formatted_results[key] = f"{value:.4f} {abbr}"
                     break
 
     return formatted_results
