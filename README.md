@@ -71,16 +71,15 @@ If you find a bug or have a feature request, please feel free to open an issue i
    ```
    
 4. Create the code for the calculation in your Python file
-5. Have results returned by creating the `result` using `jsonify`, and make sure to return it properly:
+5. Have results returned using `jsonify`:
 
     ```python
-    result = jsonify({
+    return jsonify({
         'values': {
             'value1': f"Value #1: {value1}",
             'value2': f"Value #2: {value2}"
         }
     })
-    return result
     ```
 6. Sumbit a pull request with your calculator and wait for it to be Approved and Merged.
 
