@@ -81,7 +81,7 @@ If you find a bug or have a feature request, please feel free to open an issue i
         }
     })
     ```
-6. Sumbit a pull request with your calculator and wait for it to be Approved and Merged.
+6. Submit a pull request with your calculator and wait for it to be Approved and Merged.
 
 ### Notes
 - Calculator Subtitles are not required or recommended. 
