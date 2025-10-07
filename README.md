@@ -3,15 +3,6 @@ A collection of tools/calculators.
 
 The project is a hosted on its [Flask Site](https://everything-calculator.vercel.app/)
 
-
-## List of Calculators:
-Here’s a breakdown of the calculators currently included (Sorted by most recently added on top):
-
-- Area/Perimeter | Circle and Regular Polygons
-- Algebra | Two Step Equations
-- Patterns | Arithmetic and Geometric Sequences
-- Trigonometry (Right Triangle) + Pythagorean Theorem
-
 ## Contributing:
 1. Fork the repository and clone it locally.
 2. Make your changes

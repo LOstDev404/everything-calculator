@@ -90,5 +90,18 @@
         "textinput": {
             "inputValue": "Enter a value with its unit ('15 feet', '2.5 kg', '3 gallons'):"
         }
+    },
+    {
+        "id": "parabola",
+        "name": "Parabola | General Form",
+        "description": "Analyze a parabola from ax^2+bx+c",
+        "tags": "parabola quadratic vertex y-intercept axis symmetry opens up down minimum maximum",
+        "title": "Parabola Calculator:",
+        "subtitle": "General Form: Ax^2+Bx+C",
+        "numberinput": {
+            "aCoeff": "A coefficient (a):",
+            "bCoeff": "B coefficient (b):",
+            "cCoeff": "C coefficient (c):"
+        }
     }
 ]
