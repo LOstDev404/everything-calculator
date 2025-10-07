@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "pip install --upgrade pip && pip install -r requirements.txt",
+  "installCommand": "pip install -r requirements.txt",
   "builds": [
     {
       "src": "app.py",
@@ -10,11 +10,6 @@
       }
     }
   ],
-  "functions": {
-    "app.py": {
-      "runtime": "python3.11"
-    }
-  },
   "routes": [
     {
       "src": "/(.*)",
