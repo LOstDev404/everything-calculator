@@ -1,4 +1,3 @@
-import re
 from flask import jsonify
 from fractions import Fraction
 from python.utils import float_to_fraction_percent
