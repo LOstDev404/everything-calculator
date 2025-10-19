@@ -62,7 +62,7 @@ def plot_parabola(a, b, c, xv, yv, axis):
         plt.close('all')
         raise e
 
-def parabola_solve(data):
+def parabolageneral_solve(data):
     try:
         a_raw = data.get('aCoeff')
         b_raw = data.get('bCoeff')

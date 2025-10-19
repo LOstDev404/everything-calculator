@@ -92,7 +92,7 @@
         }
     },
     {
-        "id": "parabola",
+        "id": "parabolageneral",
         "name": "Parabola | General Form",
         "description": "Analyze a parabola from ax^2+bx+c",
         "tags": "parabola quadratic vertex y-intercept axis symmetry opens up down minimum maximum",
